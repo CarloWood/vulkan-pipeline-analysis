@@ -2,10 +2,20 @@
 
 #include "PipelineLayout.h"
 #include "Stage.h"
+#include "Generated.h"
+#include "utils/has_print_on.h"
 #include <array>
 
-class Pipeline
-{
-  PipelineLayout m_layout;
-  std::array<Stage, number_of_stages> m_stages;
+using utils::has_print_on::operator<<;
+
+class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>&, PipelineLayout&>>
+{                                                       // vk::GraphicsPipelineCreateInfo element(s).
+ public:
+  Pipeline() : Generated(std::forward_as_tuple(m_stages, m_layout)) { }
+
+  void print_on(std::ostream& os) const;
+
+ private:
+  std::array<Stage, number_of_stages> m_stages;         // stageCount, pStages.
+  PipelineLayout m_layout;                              // layout.
 };

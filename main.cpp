@@ -1,6 +1,17 @@
+#include "sys.h"
 #include <iostream>
+#include "Pipeline.h"
+#include "debug.h"
 
 int main()
 {
-  std::cout << "Hello world\n";
+  Debug(NAMESPACE_DEBUG::init());
+
+  Pipeline stuff;
+
+  do
+  {
+    Dout(dc::notice, stuff);
+  }
+  while (stuff.next());
 }

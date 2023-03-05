@@ -1,27 +1,43 @@
 #pragma once
 
-static constexpr number_of_stages = 3;
+#include "ShaderModule.h"
+#include "ShaderStageFlags.h"
+#include "Generated.h"
+#include "utils/is_power_of_two.h"
+#include "utils/log2.h"
+#include "utils/has_print_on.h"
+#include "debug.h"
 
-using stage_id = int;
-using stage_id_mask = unsigned int;
+static constexpr utils::bitset::IndexPOD index_end{number_of_stages};
+using utils::bitset::index_begin;
 
-class Stage
+using utils::has_print_on::operator<<;
+
+class Stage : public Generated<std::tuple<ShaderStageFlagBits&, ShaderModule&>>
 {
-  stage_id m_id;
-
  public:
-  static stage_id_mask id_to_mask(stage_id id)
+  static ShaderStageFlags id_to_mask(ShaderStageFlagBits id)
   {
-    return stage_id_mask{1} << id;
+    return {id};
   }
 
-  static stage_id mask_to_id(stage_id_mask bit)
+  static ShaderStageFlagBits mask_to_id(ShaderStageFlags bit)
   {
-    utils::
+    ASSERT(bit.is_single_bit());
+    utils::bitset::Index index{bit.lssbi()};
+    return ShaderStageFlagBits{index};
   }
 
-  Stage(stage_id id) : m_id(id)
+  Stage() : Generated(std::forward_as_tuple(m_id, m_module)) { }
+
+  Stage(ShaderStageFlagBits id) : Generated(std::forward_as_tuple(m_id, m_module)), m_id(id)
   {
-    assert(0 <= id && id < number_of_stages);
+    ASSERT(index_begin <= id && id < index_end);
   }
+
+  void print_on(std::ostream& os) const;
+
+ private:
+  ShaderStageFlagBits m_id;             // One bit value specifying a single pipeline stage.
+  ShaderModule m_module;                // Handle to the compiled shader code for this stage.
 };
