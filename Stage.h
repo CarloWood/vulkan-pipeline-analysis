@@ -8,14 +8,12 @@
 #include "utils/has_print_on.h"
 #include "debug.h"
 
-static constexpr utils::bitset::IndexPOD index_end{number_of_stages};
-using utils::bitset::index_begin;
-
 using utils::has_print_on::operator<<;
 
-class Stage : public Generated<std::tuple<ShaderStageFlagBits&, ShaderModule&>>
+class Stage : public Generated<std::tuple<ShaderModule&>>
 {
  public:
+#if 0
   static ShaderStageFlags id_to_mask(ShaderStageFlagBits id)
   {
     return {id};
@@ -27,17 +25,14 @@ class Stage : public Generated<std::tuple<ShaderStageFlagBits&, ShaderModule&>>
     utils::bitset::Index index{bit.lssbi()};
     return ShaderStageFlagBits{index};
   }
+#endif
 
-  Stage() : Generated(std::forward_as_tuple(m_id, m_module)) { }
-
-  Stage(ShaderStageFlagBits id) : Generated(std::forward_as_tuple(m_id, m_module)), m_id(id)
+  Stage(ShaderStageFlagBits id) : Generated(std::forward_as_tuple(m_module)), m_module(id)
   {
-    ASSERT(index_begin <= id && id < index_end);
   }
 
   void print_on(std::ostream& os) const;
 
  private:
-  ShaderStageFlagBits m_id;             // One bit value specifying a single pipeline stage.
   ShaderModule m_module;                // Handle to the compiled shader code for this stage.
 };

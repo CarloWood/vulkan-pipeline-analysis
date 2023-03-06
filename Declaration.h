@@ -1,11 +1,14 @@
 #pragma once
 
+#ifndef DECLARATION_H
+#define DECLARATION_H
+
 #include "SetIndex.h"
 #include "Binding.h"
+#include "AShaderResource.h"
 #include "utils/has_print_on.h"
 
 class ShaderModule;
-class ShaderResource;
 
 using utils::has_print_on::operator<<;
 
@@ -19,7 +22,7 @@ using utils::has_print_on::operator<<;
 class Declaration
 {
  public:
-  Declaration() { reset(); }
+  Declaration(ShaderModule const* owner) : m_owner(owner) { reset(); }
 
   void print_on(std::ostream& os) const;
 
@@ -27,8 +30,10 @@ class Declaration
   bool next() { return false; }
 
  private:
-  ShaderModule* m_owner;                // The ShaderModule that this Declaration instance is used in.
+  ShaderModule const* const m_owner;    // The ShaderModule that this Declaration instance is used in (fixed).
   SetIndex m_set_index;                 // The set index that this declaration uses.
   Binding m_binding;                    // The binding number that this declaration uses.
-  ShaderResource* m_shader_resource;    // The shader resource that is expected to be bound.
+  AShaderResource m_a_shader_resource;  // The shader resource that is expected to be bound.
 };
+
+#endif // DECLARATION_H

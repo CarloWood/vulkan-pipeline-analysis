@@ -65,6 +65,7 @@ add_executable(analysis
   PipelineLayout.cpp
   Stage.cpp
   ShaderModule.cpp
+  AShaderResource.cpp
 )
 
 target_link_libraries(analysis

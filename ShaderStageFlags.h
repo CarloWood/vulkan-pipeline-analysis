@@ -43,7 +43,7 @@ class ShaderStageFlagBits : public ShaderStageFlags::Index
  public:
   ShaderStageFlagBits() { reset(); }
   ShaderStageFlagBits(ShaderStageFlags::Index const& index) : ShaderStageFlags::Index(index) { }
-  ShaderStageFlagBits(utils::bitset::IndexPOD index) : ShaderStageFlags::Index(index) { }
+  constexpr ShaderStageFlagBits(utils::bitset::IndexPOD index) : ShaderStageFlags::Index(index) { }
 
   void reset()
   {
@@ -56,3 +56,7 @@ class ShaderStageFlagBits : public ShaderStageFlags::Index
     return m_index < number_of_stages;
   }
 };
+
+static constexpr ShaderStageFlagBits stage0 = utils::bitset::IndexPOD{0};
+static constexpr ShaderStageFlagBits stage1 = utils::bitset::IndexPOD{1};
+static constexpr ShaderStageFlagBits stage2 = utils::bitset::IndexPOD{2};

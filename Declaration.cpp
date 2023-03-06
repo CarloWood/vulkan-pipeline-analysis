@@ -7,6 +7,6 @@ void Declaration::print_on(std::ostream& os) const
   os << "owner:" << m_owner <<
       ", set_index:" << m_set_index <<
       ", binding:" << m_binding <<
-      ", shader_resource:" << m_shader_resource;
+      ", a_shader_resource:" << m_a_shader_resource;
   os << '}';
 }

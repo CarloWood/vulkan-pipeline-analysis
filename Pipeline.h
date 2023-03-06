@@ -11,7 +11,9 @@ using utils::has_print_on::operator<<;
 class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>&, PipelineLayout&>>
 {                                                       // vk::GraphicsPipelineCreateInfo element(s).
  public:
-  Pipeline() : Generated(std::forward_as_tuple(m_stages, m_layout)) { }
+  Pipeline() : Generated(std::forward_as_tuple(m_stages, m_layout)), m_stages{ stage0, stage1, stage2 }
+  {
+  }
 
   void print_on(std::ostream& os) const;
 

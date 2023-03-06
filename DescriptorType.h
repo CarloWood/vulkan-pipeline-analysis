@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interval.h"
 #include "utils/Vector.h"
 
 namespace category {
@@ -17,4 +18,5 @@ class DescriptorType : public Interval<DescriptorTypeIndex>
 {
  public:
   DescriptorType() : Interval<DescriptorTypeIndex>(descriptor_type_begin, descriptor_type_end) { }
+  DescriptorType(DescriptorTypeIndex index) : Interval<DescriptorTypeIndex>(index, index + 1) { }
 };

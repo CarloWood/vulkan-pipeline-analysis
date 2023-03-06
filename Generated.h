@@ -40,7 +40,9 @@ class Generated<std::tuple<Args&...>>
   template<std::size_t I>
   void reset_()
   {
-    if constexpr (is_container_v<std::decay_t<decltype(std::get<I>(members_))>>)
+    if constexpr (sizeof...(Args) == 0)
+      return;
+    else if constexpr (is_container_v<std::decay_t<decltype(std::get<I>(members_))>>)
     {
       auto& container = std::get<I>(members_);
       for (auto& element : container)
@@ -56,22 +58,27 @@ class Generated<std::tuple<Args&...>>
   bool next_()
   {
     bool success = true;
-    if constexpr (is_container_v<std::decay_t<decltype(std::get<I>(members_))>>)
+    if constexpr (sizeof...(Args) == 0)
+      return false;
+    else
     {
-      auto& container = std::get<I>(members_);
-      auto it = container.begin();
-      auto end = container.end();
-      while (it != end && !it->next())
+      if constexpr (is_container_v<std::decay_t<decltype(std::get<I>(members_))>>)
       {
-        it->reset();
-        ++it;
+        auto& container = std::get<I>(members_);
+        auto it = container.begin();
+        auto end = container.end();
+        while (it != end && !it->next())
+        {
+          it->reset();
+          ++it;
+        }
+        success = it != end;
       }
-      success = it != end;
-    }
-    else if (!std::get<I>(members_).next())
-    {
-      std::get<I>(members_).reset();
-      success = false;
+      else if (!std::get<I>(members_).next())
+      {
+        std::get<I>(members_).reset();
+        success = false;
+      }
     }
     if (success)
       return true;
