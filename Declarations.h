@@ -7,10 +7,11 @@
 class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
 {
  public:
-  Declarations(ShaderModule const* owner) : Generated(std::forward_as_tuple(m_declarations)), m_owner(owner) { reset(); }
+  Declarations(ShaderModule const* owner) : Generated("Declarations", std::forward_as_tuple(m_declarations)), m_owner(owner) { reset(); }
 
   void reset()
   {
+    DoutEntering(dc::notice, "Declarations::reset()");
     m_declarations.clear();
   }
 
@@ -21,14 +22,16 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
     size_t new_size = m_declarations.size() + 1;
     if (new_size > number_of_shader_resources)
       return false;
-    m_declarations.clear();
-    m_declarations = std::vector<Declaration>{new_size, m_owner};
+    std::vector<Declaration> new_declarations;
+    for (int i = 0; i < new_size; ++i)
+      new_declarations.emplace_back(m_owner);
+    m_declarations = std::move(new_declarations);
     return true;
   }
 
   void print_on(std::ostream& os) const
   {
-    os << '{';
+    os << TYPE_COLOR_BEGIN "Declarations" TYPE_COLOR_END << "{";
     os << "declarations:" << m_declarations;
     os << '}';
   }

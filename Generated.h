@@ -23,16 +23,18 @@ class Generated<std::tuple<Args&...>>
  public:
   using Tuple = std::tuple<Args&...>;
 
-  Generated() = default;
-  Generated(Tuple members) : members_(members) { }
+//  Generated() = default;
+  Generated(char const* name, Tuple members) : m_name(name), members_(members) { }
 
   void reset()
   {
+    DoutEntering(dc::notice, m_name << "::reset()");
     reset_<0>();
   }
 
   bool next()
   {
+    DoutEntering(dc::notice, m_name << "::next()");
     return next_<sizeof...(Args) - 1>();
   }
 
@@ -88,5 +90,6 @@ class Generated<std::tuple<Args&...>>
       return false;
   }
 
+  char const* m_name;
   Tuple members_;
 };

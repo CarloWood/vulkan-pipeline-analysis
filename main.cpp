@@ -7,7 +7,9 @@ int main()
 {
   Debug(NAMESPACE_DEBUG::init());
 
-  Pipeline stuff;
+  ShaderStageFlagBits flag;
+  ShaderModule sm(flag);
+  Declarations stuff(&sm);
 
   do
   {

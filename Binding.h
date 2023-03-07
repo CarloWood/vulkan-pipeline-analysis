@@ -10,6 +10,12 @@ struct Binding;
 // Id that uniquely identifies a resource (descriptor) within a descriptor set.
 using BindingIndex = utils::VectorIndex<category::Binding>;
 
+template<>
+constexpr char const* demangled_name<BindingIndex>()
+{
+  return "Binding";
+}
+
 static constexpr BindingIndex binding_begin{0};
 static constexpr BindingIndex binding_end{3};
 

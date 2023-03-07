@@ -9,7 +9,7 @@ using utils::has_print_on::operator<<;
 class DescriptorSetLayout : public Generated<std::tuple<std::vector<DescriptorSetLayoutBinding>&>>
 {
  public:
-  DescriptorSetLayout() : Generated(std::forward_as_tuple(m_descriptor_set_layout_bindings)) { }
+  DescriptorSetLayout() : Generated("DescriptorSetLayout", std::forward_as_tuple(m_descriptor_set_layout_bindings)) { }
 
   void print_on(std::ostream& os) const;
 

@@ -12,7 +12,7 @@ using utils::has_print_on::operator<<;
 class DescriptorSetLayoutBinding : public Generated<std::tuple<Binding&, DescriptorType&, DescriptorCount&, ShaderStageFlags&>>
 {
  public:
-  DescriptorSetLayoutBinding() : Generated(std::forward_as_tuple(m_binding, m_descriptor_type, m_descriptor_count, m_stage_flags)) { }
+  DescriptorSetLayoutBinding() : Generated("DescriptorSetLayoutBinding", std::forward_as_tuple(m_binding, m_descriptor_type, m_descriptor_count, m_stage_flags)) { }
   void print_on(std::ostream& os) const;
 
  private:

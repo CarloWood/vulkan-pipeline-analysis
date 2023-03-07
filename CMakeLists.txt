@@ -68,6 +68,13 @@ add_executable(analysis
   AShaderResource.cpp
 )
 
+get_target_property(CWDS_INTERFACE_INCLUDE_DIRECTORIES AICxx::cwds INTERFACE_INCLUDE_DIRECTORIES)
+target_include_directories(analysis
+  PUBLIC
+    "${CMAKE_CURRENT_SOURCE_DIR}"
+    "${CWDS_INTERFACE_INCLUDE_DIRECTORIES}" # For sys.h and debug.h.
+)
+
 target_link_libraries(analysis
   PRIVATE
     ${AICXX_OBJECTS_LIST}

@@ -18,17 +18,22 @@ class Interval
 
   void reset()
   {
+    DoutEntering(dc::notice, demangled_name<I>() << "::reset()");
     m_value = m_begin;
   }
 
   bool next()
   {
-    return ++m_value < m_end;
+    DoutEntering(dc::notice, demangled_name<I>() << "::next()");
+    Dout(dc::notice, "m_value = " << m_value);
+    ++m_value;
+    Dout(dc::notice, "m_value = " << m_value);
+    return m_value < m_end;
   }
 
   void print_on(std::ostream& os) const
   {
-    os << m_value;
+    os << TYPE_COLOR_BEGIN << demangled_name<I>() << TYPE_COLOR_END << '{' << m_value << '}';
   }
 
  private:

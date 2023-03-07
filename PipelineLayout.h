@@ -10,7 +10,7 @@ using utils::has_print_on::operator<<;
 class PipelineLayout : public Generated<std::tuple<std::vector<DescriptorSetLayout>&>>
 {
  public:
-  PipelineLayout() : Generated(std::forward_as_tuple(m_descriptor_set_layouts)) { }
+  PipelineLayout() : Generated("PipelineLayout", std::forward_as_tuple(m_descriptor_set_layouts)) { }
 
   void print_on(std::ostream& os) const;
 

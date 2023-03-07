@@ -11,11 +11,13 @@ class DescriptorCount
 
   void reset()
   {
+    DoutEntering(dc::notice, "DescriptorCount::reset()");
     m_count = -1;
   }
 
   bool next()
   {
+    DoutEntering(dc::notice, "DescriptorCount::next()");
     if (m_count > 1)
       return false;     // We reached the end of this "range".
     if (m_count == -1)
@@ -27,7 +29,7 @@ class DescriptorCount
 
   void print_on(std::ostream& os) const
   {
-    os << m_count;
+    os << TYPE_COLOR_BEGIN "DescriptorCount" TYPE_COLOR_END << "{" << m_count << "}";
   }
 
  private:

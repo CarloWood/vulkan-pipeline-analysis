@@ -3,7 +3,7 @@
 
 void DescriptorSetLayoutBinding::print_on(std::ostream& os) const
 {
-  os << '{';
+  os << TYPE_COLOR_BEGIN "DescriptorSetLayoutBinding" TYPE_COLOR_END "{";
   os << "binding:" << m_binding <<
       ", descriptor_type:" << m_descriptor_type <<
       ", descriptor_count:" << m_descriptor_count <<

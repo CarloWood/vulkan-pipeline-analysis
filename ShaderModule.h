@@ -14,7 +14,7 @@ using utils::has_print_on::operator<<;
 class ShaderModule : public Generated<std::tuple<Declarations&>>
 {
  public:
-  ShaderModule(ShaderStageFlagBits stage) : Generated(std::forward_as_tuple(m_declarations)), m_stage(stage), m_declarations(this)
+  ShaderModule(ShaderStageFlagBits stage) : Generated("ShaderModule", std::forward_as_tuple(m_declarations)), m_stage(stage), m_declarations(this)
   {
     ASSERT(index_begin <= stage && stage < index_end);
   }
