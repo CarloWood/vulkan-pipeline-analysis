@@ -11,7 +11,7 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
 
   void reset()
   {
-    DoutEntering(dc::notice, "Declarations::reset()");
+    //DoutEntering(dc::notice, "Declarations::reset()");
     m_declarations.clear();
   }
 

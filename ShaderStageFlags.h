@@ -18,13 +18,13 @@ class ShaderStageFlags : public utils::BitSet<uint32_t>
 
   void reset()
   {
-    DoutEntering(dc::notice, "ShaderStageFlags::reset()");
+    //DoutEntering(dc::notice, "ShaderStageFlags::reset()");
     m_bitmask = 1;
   }
 
   bool next()
   {
-    DoutEntering(dc::notice, "ShaderStageFlags::next()");
+    //DoutEntering(dc::notice, "ShaderStageFlags::next()");
     ++m_bitmask;
     return !test(Index{shader_stage_flags_end});
   }

@@ -7,13 +7,16 @@ int main()
 {
   Debug(NAMESPACE_DEBUG::init());
 
-  ShaderStageFlagBits flag;
-  ShaderModule sm(flag);
-  Declarations stuff(&sm);
+  Pipeline pipeline;
 
+  int count = 0;
   do
   {
-    Dout(dc::notice, stuff);
+    ++count;
+//    if (count > 8638025 - 100)
+//      Dout(dc::notice, pipeline);
   }
-  while (stuff.next());
+  while (pipeline.next());
+
+  Dout(dc::notice, "count = " << count);
 }

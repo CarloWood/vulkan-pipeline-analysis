@@ -18,16 +18,16 @@ class Interval
 
   void reset()
   {
-    DoutEntering(dc::notice, demangled_name<I>() << "::reset()");
+    //DoutEntering(dc::notice, demangled_name<I>() << "::reset()");
     m_value = m_begin;
   }
 
   bool next()
   {
-    DoutEntering(dc::notice, demangled_name<I>() << "::next()");
-    Dout(dc::notice, "m_value = " << m_value);
+    //DoutEntering(dc::notice, demangled_name<I>() << "::next()");
+    //Dout(dc::notice, "m_value = " << m_value);
     ++m_value;
-    Dout(dc::notice, "m_value = " << m_value);
+    //Dout(dc::notice, "m_value = " << m_value);
     return m_value < m_end;
   }
 

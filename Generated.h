@@ -28,13 +28,13 @@ class Generated<std::tuple<Args&...>>
 
   void reset()
   {
-    DoutEntering(dc::notice, m_name << "::reset()");
+    //DoutEntering(dc::notice, m_name << "::reset()");
     reset_<0>();
   }
 
   bool next()
   {
-    DoutEntering(dc::notice, m_name << "::next()");
+    //DoutEntering(dc::notice, m_name << "::next()");
     return next_<sizeof...(Args) - 1>();
   }
 

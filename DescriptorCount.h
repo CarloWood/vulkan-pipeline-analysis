@@ -11,13 +11,13 @@ class DescriptorCount
 
   void reset()
   {
-    DoutEntering(dc::notice, "DescriptorCount::reset()");
+    //DoutEntering(dc::notice, "DescriptorCount::reset()");
     m_count = -1;
   }
 
   bool next()
   {
-    DoutEntering(dc::notice, "DescriptorCount::next()");
+    //DoutEntering(dc::notice, "DescriptorCount::next()");
     if (m_count > 1)
       return false;     // We reached the end of this "range".
     if (m_count == -1)
