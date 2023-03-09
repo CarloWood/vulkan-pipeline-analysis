@@ -29,6 +29,19 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
     return true;
   }
 
+  void randomize(utils::RandomNumber& rn)
+  {
+    //DoutEntering(dc::notice, "Declarations::randomize()");
+    size_t new_size = rn.generate(s_distribution);
+    std::vector<Declaration> new_declarations;
+    for (int i = 0; i < new_size; ++i)
+    {
+      new_declarations.emplace_back(m_owner);
+      new_declarations.back().randomize(rn);
+    }
+    m_declarations = std::move(new_declarations);
+  }
+
   void print_on(std::ostream& os) const
   {
     os << TYPE_COLOR_BEGIN "Declarations" TYPE_COLOR_END << "{";
@@ -37,6 +50,7 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
   }
 
  private:
+  static std::uniform_int_distribution<size_t> s_distribution;
   ShaderModule const* const m_owner;            // The ShaderModule that these Declarations are used in (fixed).
   std::vector<Declaration> m_declarations;
 };

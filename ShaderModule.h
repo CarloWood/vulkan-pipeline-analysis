@@ -3,6 +3,7 @@
 #include "Declarations.h"
 #include "ShaderStageFlags.h"
 #include "Generated.h"
+#include "DeclarationMask.h"
 #include "utils/has_print_on.h"
 #include <vector>
 

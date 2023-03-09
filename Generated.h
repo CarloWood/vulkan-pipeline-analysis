@@ -1,5 +1,6 @@
 #pragma once
 
+#include "utils/RandomNumber.h"
 #include <type_traits>
 #include <cstdint>
 #include <array>
@@ -36,6 +37,12 @@ class Generated<std::tuple<Args&...>>
   {
     //DoutEntering(dc::notice, m_name << "::next()");
     return next_<sizeof...(Args) - 1>();
+  }
+
+  void randomize(utils::RandomNumber& rn)
+  {
+    //DoutEntering(dc::notice, m_name << "::randomize()");
+    randomize_<0>(rn);
   }
 
  private:
@@ -88,6 +95,23 @@ class Generated<std::tuple<Args&...>>
       return next_<I - 1>();
     else
       return false;
+  }
+
+  template<std::size_t I>
+  void randomize_(utils::RandomNumber& rn)
+  {
+    if constexpr (sizeof...(Args) == 0)
+      return;
+    else if constexpr (is_container_v<std::decay_t<decltype(std::get<I>(members_))>>)
+    {
+      auto& container = std::get<I>(members_);
+      for (auto& element : container)
+        element.randomize(rn);
+    }
+    else
+      std::get<I>(members_).randomize(rn);
+    if constexpr (I + 1 < sizeof...(Args))
+      randomize_<I + 1>(rn);
   }
 
   char const* m_name;

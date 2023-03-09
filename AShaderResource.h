@@ -17,12 +17,6 @@ struct AShaderResource;
 // Id that uniquely identifies a resource (descriptor) within a descriptor set.
 using AShaderResourceIndex = utils::VectorIndex<category::AShaderResource>;
 
-template<>
-constexpr char const* demangled_name<AShaderResourceIndex>()
-{
-  return "AShaderResource";
-}
-
 static constexpr AShaderResourceIndex a_shader_resource_begin{0};
 static constexpr AShaderResourceIndex a_shader_resource_end{number_of_shader_resources};
 
@@ -34,6 +28,12 @@ class AShaderResource : public Interval<AShaderResourceIndex>
   AShaderResource() : Interval(a_shader_resource_begin, a_shader_resource_end) { }
 
   void print_on(std::ostream& os) const;
+
+ private:
+  char const* demangled_name() const override
+  {
+    return "AShaderResource";
+  }
 
  private:
   static utils::Array<ShaderResource, number_of_shader_resources, AShaderResourceIndex> const s_shader_resources;

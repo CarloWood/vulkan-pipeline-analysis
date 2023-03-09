@@ -1,6 +1,9 @@
 #pragma once
 
 #include "utils/has_print_on.h"
+#include "utils/RandomNumber.h"
+#include <array>
+#include "debug.h"
 
 using utils::has_print_on::operator<<;
 
@@ -27,11 +30,19 @@ class DescriptorCount
     return true;
   }
 
+  void randomize(utils::RandomNumber& rn)
+  {
+    //DoutEntering(dc::notice, "DescriptorCount::randomize()");
+    static std::array<int, 3> values = { -1, 1, 7 };
+    m_count = values[rn.generate(s_distribution)];
+  }
+
   void print_on(std::ostream& os) const
   {
     os << TYPE_COLOR_BEGIN "DescriptorCount" TYPE_COLOR_END << "{" << m_count << "}";
   }
 
  private:
+  static std::uniform_int_distribution<int> s_distribution;
   int m_count;          // -1: unbound array; 1: not an array; otherwise the size of the array.
 };

@@ -66,6 +66,9 @@ add_executable(analysis
   Stage.cpp
   ShaderModule.cpp
   AShaderResource.cpp
+  Declarations.cpp
+  DescriptorCount.cpp
+  ShaderStageFlags.cpp
 )
 
 get_target_property(CWDS_INTERFACE_INCLUDE_DIRECTORIES AICxx::cwds INTERFACE_INCLUDE_DIRECTORIES)
