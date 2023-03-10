@@ -74,25 +74,32 @@ class Generated<std::tuple<Args&...>>
       if constexpr (is_container_v<std::decay_t<decltype(std::get<I>(members_))>>)
       {
         auto& container = std::get<I>(members_);
-        auto it = container.begin();
-        auto end = container.end();
+        auto it = container.rbegin();
+        auto end = container.rend();
         while (it != end && !it->next())
-        {
-          it->reset();
           ++it;
-        }
         success = it != end;
+        if (success)
+          while (it != container.rbegin())
+          {
+            --it;
+            it->reset();
+          }
       }
       else if (!std::get<I>(members_).next())
       {
-        std::get<I>(members_).reset();
         success = false;
       }
     }
     if (success)
       return true;
     if constexpr (I > 0)
-      return next_<I - 1>();
+    {
+      success = next_<I - 1>();
+      if (success)
+        std::get<I>(members_).reset();
+      return success;
+    }
     else
       return false;
   }

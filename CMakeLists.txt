@@ -69,6 +69,7 @@ add_executable(analysis
   Declarations.cpp
   DescriptorCount.cpp
   ShaderStageFlags.cpp
+  SetIndexBindingSlot.cpp
 )
 
 get_target_property(CWDS_INTERFACE_INCLUDE_DIRECTORIES AICxx::cwds INTERFACE_INCLUDE_DIRECTORIES)

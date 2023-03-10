@@ -8,8 +8,9 @@ int main()
 {
   Debug(NAMESPACE_DEBUG::init());
 
-  utils::RandomNumber rn;
-  Pipeline pipeline;
+  ShaderStageFlagBits f;
+  ShaderModule sm(f);
+  Declarations/*Pipeline*/ pipeline(&sm);
 
 #if 0
   int count = 0;
@@ -17,16 +18,19 @@ int main()
   {
     ++count;
 //    if (count > 8638025 - 100)
-//      Dout(dc::notice, pipeline);
+      Dout(dc::notice, pipeline);
   }
   while (pipeline.next());
-#endif
+
+#else
+  utils::RandomNumber rn;
 
   for (;;)
   {
     pipeline.randomize(rn);
     Dout(dc::notice, pipeline);
   }
+#endif
 
   //Dout(dc::notice, "count = " << count);
 }
