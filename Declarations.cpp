@@ -5,13 +5,11 @@
 void Declarations::randomize(utils::RandomNumber& rn)
 {
   //DoutEntering(dc::notice, "Declarations::randomize()");
-  m_owner->allow_all_slots();
+  m_owner->allow_all();
   size_t new_size = rn.generate(s_distribution);
   std::vector<Declaration> new_declarations;
   for (int i = 0; i < new_size; ++i)
-  {
     new_declarations.emplace_back(m_owner, rn, i);
-  }
   m_declarations = std::move(new_declarations);
 }
 

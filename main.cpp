@@ -18,10 +18,11 @@ int main()
   {
     ++count;
 //    if (count > 8638025 - 100)
-      Dout(dc::notice, pipeline);
+//      Dout(dc::notice, pipeline);
   }
   while (pipeline.next());
 
+  Dout(dc::notice, "count = " << count);
 #else
   utils::RandomNumber rn;
 
@@ -31,6 +32,4 @@ int main()
     Dout(dc::notice, pipeline);
   }
 #endif
-
-  //Dout(dc::notice, "count = " << count);
 }

@@ -41,13 +41,13 @@ class Interval
 
   void reset()
   {
-    //DoutEntering(dc::notice, demangled_name<I>() << "::reset()");
+    //DoutEntering(dc::notice, demangled_name() << "::reset()");
     m_value = m_begin;
   }
 
   bool next()
   {
-    //DoutEntering(dc::notice, demangled_name<I>() << "::next()");
+    //DoutEntering(dc::notice, demangled_name() << "::next()");
     //Dout(dc::notice, "m_value = " << m_value);
     ++m_value;
     //Dout(dc::notice, "m_value = " << m_value);
@@ -56,7 +56,7 @@ class Interval
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::notice, demangled_name<I>() << "::randomize()");
+    //DoutEntering(dc::notice, demangled_name() << "::randomize()");
     if constexpr (std::is_same_v<I, utils::bitset::Index>)
     {
       utils::bitset::IndexPOD index{rn.generate(m_distribution)};

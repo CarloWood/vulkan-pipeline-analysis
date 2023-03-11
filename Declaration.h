@@ -24,11 +24,11 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
  public:
   Declaration(ShaderModule* owner, int vi) :
     Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
-    m_owner(owner), m_set_index_binding_slot(owner, vi) { }
+    m_owner(owner), m_set_index_binding_slot(owner, vi), m_a_shader_resource(owner, vi) { }
 
   Declaration(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
     Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
-    m_owner(owner), m_set_index_binding_slot(owner, rn, vi) { m_a_shader_resource.randomize(rn); }
+    m_owner(owner), m_set_index_binding_slot(owner, rn, vi), m_a_shader_resource(owner, rn, vi) { }
 
   Declaration(Declaration const*) = delete;
   Declaration(Declaration&& orig) :

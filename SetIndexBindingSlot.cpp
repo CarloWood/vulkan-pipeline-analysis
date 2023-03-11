@@ -4,20 +4,20 @@
 
 void SetIndexBindingSlot::reset()
 {
-  Dout(dc::notice|continued_cf, "SetIndexBindingSlot::reset(" << m_vi << ") --> ");
+  //Dout(dc::notice|continued_cf, "SetIndexBindingSlot::reset(" << m_vi << ") --> ");
   m_available_slots_iter = m_owner->available_slots().unused_set_index_binding_slots()();
   m_slot_as_bit = *m_available_slots_iter;
-  Dout(dc::finish, *this);
-  m_owner->mark_used(m_slot_as_bit);
+  //Dout(dc::finish, *this);
+  m_owner->mark_used_slots(m_slot_as_bit);
 }
 
 bool SetIndexBindingSlot::next()
 {
-  Dout(dc::notice|continued_cf, "SetIndexBindingSlot::next(" << m_vi << ") --> ");
-  m_owner->mark_unused(m_slot_as_bit);
+  //Dout(dc::notice|continued_cf, "SetIndexBindingSlot::next(" << m_vi << ") --> ");
+  m_owner->mark_unused_slots(m_slot_as_bit);
   m_slot_as_bit = *++m_available_slots_iter;
-  Dout(dc::finish, *this);
-  m_owner->mark_used(m_slot_as_bit);
+  //Dout(dc::finish, *this);
+  m_owner->mark_used_slots(m_slot_as_bit);
   return m_slot_as_bit.any();
 }
 
@@ -35,11 +35,11 @@ void SetIndexBindingSlot::randomize(utils::RandomNumber& rn)
     --bit;
   }
   m_slot_as_bit = *m_available_slots_iter;
-  m_owner->mark_used(m_slot_as_bit);
+  m_owner->mark_used_slots(m_slot_as_bit);
 }
 
 void SetIndexBindingSlot::print_on(std::ostream& os) const
 {
-  std::pair<SetIndexIndex, BindingIndex> set_index_binding_pair = get_set_index_binding(get_bitset());
+  std::pair<SetIndexIndex, BindingIndex> set_index_binding_pair = get_set_index_binding();
   os << set_index_binding_pair.first << '.' << set_index_binding_pair.second << " (" << m_vi << ")";
 }

@@ -30,15 +30,11 @@ class SetIndexBindingSlot
     m_slot_as_bit.set(bit_index);
   }
 
-  // Pass the result of get_bitset() to this function.
-  static std::pair<SetIndexIndex, BindingIndex> get_set_index_binding(slot_as_bit_type slot_as_bit)
+  std::pair<SetIndexIndex, BindingIndex> get_set_index_binding() const
   {
-    utils::bitset::Index bit_index = slot_as_bit.lssbi();
+    utils::bitset::Index bit_index = m_slot_as_bit.lssbi();
     return { bit_index / binding_width, bit_index % binding_width };
   }
-
-  // Accessor.
-  slot_as_bit_type get_bitset() const { return m_slot_as_bit; }
 
   void reset();
   bool next();
@@ -49,7 +45,6 @@ class SetIndexBindingSlot
  private:
   ShaderModule* m_owner;
   int const m_vi;
-  // These are mutuble because they are late-initialized when calling the accessor to get the current slot.
   const_iterator m_available_slots_iter;
   slot_as_bit_type m_slot_as_bit;
 };
