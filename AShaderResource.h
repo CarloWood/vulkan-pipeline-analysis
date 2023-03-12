@@ -2,7 +2,7 @@
 
 #include "ShaderResource.h"
 #include "DescriptorType.h"
-#include "IntervalExclusive.h"
+#include "IntervalExclusiveSorted.h"
 #include "utils/has_print_on.h"
 #include "utils/Array.h"
 #include <cstdint>
@@ -22,7 +22,7 @@ using AShaderResourceIndex = utils::VectorIndex<category::AShaderResource>;
 
 using utils::has_print_on::operator<<;
 
-class AShaderResource : public IntervalExclusive<AShaderResourceIndex>
+class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
 {
  public:
   AShaderResource(ShaderModule* owner, int vi) :
@@ -39,14 +39,13 @@ class AShaderResource : public IntervalExclusive<AShaderResourceIndex>
     return "AShaderResource";
   }
 
+  AShaderResourceIndex get_sorted_begin() const override;
+  AShaderResourceIndex get_sorted_end() const override;
+
   int get_vi() const override
   {
     return m_vi;
   }
-
-  bitset_type available_values() const override;
-  void mark_unused_values(bitset_type shader_resources) const override;
-  void mark_used_values(bitset_type shader_resources) const override;
 
  private:
   static utils::Array<ShaderResource, number_of_shader_resources, AShaderResourceIndex> const s_shader_resources;

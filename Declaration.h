@@ -38,6 +38,11 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
   Declaration& operator=(Declaration const*) = delete;
   Declaration& operator=(Declaration&&) = delete;
 
+  AShaderResource const& a_shader_resource() const
+  {
+    return m_a_shader_resource;
+  }
+
   void print_on(std::ostream& os) const;
 
  private:

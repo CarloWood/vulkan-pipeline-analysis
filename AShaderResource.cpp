@@ -2,19 +2,14 @@
 #include "AShaderResource.h"
 #include "ShaderModule.h"
 
-AShaderResource::bitset_type AShaderResource::available_values() const
+AShaderResourceIndex AShaderResource::get_sorted_begin() const
 {
-  return m_owner->available_shader_resources().unused_shader_resources();
+  return m_owner->get_sorted_begin(m_vi, s_shader_resources.ibegin());
 }
 
-void AShaderResource::mark_unused_values(bitset_type shader_resources) const
+AShaderResourceIndex AShaderResource::get_sorted_end() const
 {
-  m_owner->mark_unused_shader_resources(shader_resources);
-}
-
-void AShaderResource::mark_used_values(bitset_type shader_resources) const
-{
-  m_owner->mark_used_shader_resources(shader_resources);
+  return m_owner->get_sorted_end(m_vi, s_shader_resources.iend());
 }
 
 void AShaderResource::print_on(std::ostream& os) const

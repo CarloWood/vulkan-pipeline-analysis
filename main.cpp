@@ -12,13 +12,13 @@ int main()
   ShaderModule sm(f);
   Declarations/*Pipeline*/ pipeline(&sm);
 
-#if 0
+#if 1
   int count = 0;
   do
   {
     ++count;
 //    if (count > 8638025 - 100)
-//      Dout(dc::notice, pipeline);
+    Dout(dc::notice, pipeline);
   }
   while (pipeline.next());
 

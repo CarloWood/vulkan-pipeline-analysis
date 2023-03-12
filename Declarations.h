@@ -25,6 +25,11 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
     os << '}';
   }
 
+  std::vector<Declaration> const& declarations() const
+  {
+    return m_declarations;
+  }
+
  private:
   static std::uniform_int_distribution<size_t> s_distribution;
   ShaderModule* const m_owner;                  // The ShaderModule that these Declarations are used in (fixed).

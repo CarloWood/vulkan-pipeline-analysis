@@ -24,7 +24,6 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
   void allow_all()
   {
     m_available_slots.allow_all();
-    m_available_shader_resources.allow_all();
   }
 
   void mark_used_slots(SetIndexBindingSlots::bitset_type slots)
@@ -37,14 +36,27 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
     m_available_slots.mark_unused(slots);
   }
 
-  void mark_used_shader_resources(ShaderResources::bitset_type shader_resources)
+  void set_number_of_declarations(int number_of_declarations)
   {
-    m_available_shader_resources.mark_used(shader_resources);
+    m_number_of_declarations = number_of_declarations;
   }
 
-  void mark_unused_shader_resources(ShaderResources::bitset_type shader_resources)
+  void set_current_declaration_vector(std::vector<Declaration> const* declaration_vector)
   {
-    m_available_shader_resources.mark_unused(shader_resources);
+    m_declaration_vector = declaration_vector;
+  }
+
+  AShaderResourceIndex get_sorted_begin(int vi, AShaderResourceIndex begin) const
+  {
+    ASSERT(vi >= 0);
+    return vi == 0 ? begin : (*m_declaration_vector)[vi - 1].a_shader_resource().get_value() + 1;
+  }
+
+  AShaderResourceIndex get_sorted_end(int vi, AShaderResourceIndex end) const
+  {
+    AShaderResourceIndex result = end - (m_number_of_declarations - 1) + vi;
+    ASSERT(result.get_value() <= 4 || m_number_of_declarations == 0);
+    return result;
   }
 
   void print_on(std::ostream& os) const;
@@ -54,14 +66,10 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
     return m_available_slots;
   }
 
-  ShaderResources available_shader_resources() const
-  {
-    return m_available_shader_resources;
-  }
-
  private:
   ShaderStageFlagBits const m_stage;            // The stage that this shader module is intended for (fixed).
   SetIndexBindingSlots m_available_slots;       // The set index / binding slots that are not used yet.
-  ShaderResources m_available_shader_resources; // The shader resources that are not used yet.
+  int m_number_of_declarations;                 // The current number of declarations this ShaderModule has, updated by Declarations:
+  std::vector<Declaration> const* m_declaration_vector; // Points to the currently built vector, or the completed one in m_declarations.
   Declarations m_declarations;                  // The declarations that this shader module is using.
 };
