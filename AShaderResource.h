@@ -2,7 +2,7 @@
 
 #include "ShaderResource.h"
 #include "DescriptorType.h"
-#include "BitSetInterval.h"
+#include "IntervalExclusive.h"
 #include "utils/has_print_on.h"
 #include "utils/Array.h"
 #include <cstdint>
@@ -22,7 +22,7 @@ using AShaderResourceIndex = utils::VectorIndex<category::AShaderResource>;
 
 using utils::has_print_on::operator<<;
 
-class AShaderResource : public BitSetInterval<AShaderResourceIndex>
+class AShaderResource : public IntervalExclusive<AShaderResourceIndex>
 {
  public:
   AShaderResource(ShaderModule* owner, int vi) :

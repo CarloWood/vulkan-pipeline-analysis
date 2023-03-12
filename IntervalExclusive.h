@@ -11,7 +11,7 @@
 using utils::has_print_on::operator<<;
 
 template<typename I>
-class BitSetInterval
+class IntervalExclusive
 {
  public:
   using bitset_type = utils::BitSet<uint32_t>;
@@ -19,7 +19,7 @@ class BitSetInterval
   using const_iterator = utils::bitset::const_iterator<value_as_bit_type::mask_type>;
 
   // Initialization happens by the call to reset(), which must be done from the constructor of the derived class.
-  BitSetInterval() = default;
+  IntervalExclusive() = default;
 
   void reset();
   bool next();
@@ -51,7 +51,7 @@ class BitSetInterval
 };
 
 template<typename I>
-void BitSetInterval<I>::reset()
+void IntervalExclusive<I>::reset()
 {
 #if 0 //def CWDEBUG
   DoutEntering(dc::notice|continued_cf, demangled_name() << "::reset(");
@@ -65,8 +65,8 @@ void BitSetInterval<I>::reset()
   mark_used_values(m_value_as_bit);
 }
 
-template<typename I>    
-bool BitSetInterval<I>::next()
+template<typename I>
+bool IntervalExclusive<I>::next()
 {
 #if 0 //def CWDEBUG
   Dout(dc::notice|continued_cf, demangled_name() << "::next(");
@@ -81,8 +81,8 @@ bool BitSetInterval<I>::next()
   return m_value_as_bit.any();
 }
 
-template<typename I>    
-void BitSetInterval<I>::randomize(utils::RandomNumber& rn)
+template<typename I>
+void IntervalExclusive<I>::randomize(utils::RandomNumber& rn)
 {
   bitset_type available_bits = available_values();
   m_available_values_iter = available_bits();
