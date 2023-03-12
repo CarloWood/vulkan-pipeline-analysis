@@ -15,20 +15,7 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
     m_declarations.clear();
   }
 
-  bool next()
-  {
-    if (Generated::next())
-      return true;
-    size_t new_size = m_declarations.size() + 1;
-    if (new_size > number_of_shader_resources)
-      return false;
-    std::vector<Declaration> new_declarations;
-    for (int i = 0; i < new_size; ++i)
-      new_declarations.emplace_back(m_owner, i);
-    m_declarations = std::move(new_declarations);
-    return true;
-  }
-
+  bool next();
   void randomize(utils::RandomNumber& rn);
 
   void print_on(std::ostream& os) const
