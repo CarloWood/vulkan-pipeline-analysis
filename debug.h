@@ -2,6 +2,8 @@
 
 #include <cwds/debug.h>
 
+#ifdef CWDEBUG
+
 template<typename T>
 char const* demangled_name()
 {
@@ -10,3 +12,5 @@ char const* demangled_name()
 
 #define TYPE_COLOR_BEGIN "\e[32m"
 #define TYPE_COLOR_END "\e[0m"
+
+#endif // CWDEBUG

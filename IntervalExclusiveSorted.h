@@ -46,7 +46,7 @@ class IntervalExclusiveSorted
  public:
   void reset()
   {
-    //DoutEntering(dc::notice, demangled_name() << "::reset()");
+    //DoutEntering(dc::notice, demangled_name() << "::reset() [" <<  this << "]");
     m_begin = get_sorted_begin();       // Should return m_value of the previous loop plus 1,
                                         // or the real begin value when there is no previous loop.
     m_end = get_sorted_end();           // Should return the read end minus the number of more inner loops that follow.
@@ -55,29 +55,42 @@ class IntervalExclusiveSorted
 
   bool next()
   {
-    //DoutEntering(dc::notice, demangled_name() << "::next()");
-    //Dout(dc::notice, "m_value = " << m_value);
+    //DoutEntering(dc::notice, demangled_name() << "::next() [" <<  this << "]");
+    Dout(dc::notice, "m_value " << m_value << " --> " << (m_value + 1));
     ++m_value;
-    //Dout(dc::notice, "m_value = " << m_value);
     return m_value < m_end;
   }
 
   void randomize(utils::RandomNumber& rn)
   {
     //DoutEntering(dc::notice, demangled_name() << "::randomize()");
-    if constexpr (std::is_same_v<I, utils::bitset::Index>)
-    {
-      utils::bitset::IndexPOD index{rn.generate(m_distribution)};
-      m_value = I{index};
-    }
+    m_begin = get_sorted_begin();
+    m_end = get_sorted_end();
+    ASSERT(m_begin < m_end);
+    if (m_begin == m_end - 1)
+      m_value = m_begin;
     else
-      m_value = I{static_cast<size_t>(rn.generate(m_distribution))};
+    {
+      if constexpr (std::is_same_v<I, utils::bitset::Index>)
+      {
+        std::uniform_int_distribution<int8_t> distribution(m_begin(), m_end() - 1);
+        utils::bitset::IndexPOD index{rn.generate(distribution)};
+        m_value = I{index};
+      }
+      else
+      {
+        std::uniform_int_distribution<int8_t> distribution(m_begin.get_value(), m_end.get_value() - 1);
+        m_value = I{static_cast<size_t>(rn.generate(distribution))};
+      }
+    }
   }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
     os << TYPE_COLOR_BEGIN << demangled_name() << TYPE_COLOR_END << '{' << m_value << '}';
   }
+#endif
 
   I get_value() const
   {
@@ -94,6 +107,5 @@ class IntervalExclusiveSorted
   I m_end;
 
  protected:
-  std::uniform_int_distribution<int8_t> m_distribution;
   I m_value;
 };

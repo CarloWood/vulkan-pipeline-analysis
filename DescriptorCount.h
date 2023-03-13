@@ -37,10 +37,12 @@ class DescriptorCount
     m_count = values[rn.generate(s_distribution)];
   }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
     os << TYPE_COLOR_BEGIN "DescriptorCount" TYPE_COLOR_END << "{" << m_count << "}";
   }
+#endif
 
  private:
   static std::uniform_int_distribution<int> s_distribution;

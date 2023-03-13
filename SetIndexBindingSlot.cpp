@@ -38,8 +38,10 @@ void SetIndexBindingSlot::randomize(utils::RandomNumber& rn)
   m_owner->mark_used_slots(m_slot_as_bit);
 }
 
+#ifdef CWDEBUG
 void SetIndexBindingSlot::print_on(std::ostream& os) const
 {
   std::pair<SetIndexIndex, BindingIndex> set_index_binding_pair = get_set_index_binding();
   os << set_index_binding_pair.first << '.' << set_index_binding_pair.second << " (" << m_vi << ")";
 }
+#endif

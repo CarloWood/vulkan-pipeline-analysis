@@ -18,12 +18,14 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
   bool next();
   void randomize(utils::RandomNumber& rn);
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
     os << TYPE_COLOR_BEGIN "Declarations" TYPE_COLOR_END << "{";
     os << "declarations:" << m_declarations;
     os << '}';
   }
+#endif
 
   std::vector<Declaration> const& declarations() const
   {

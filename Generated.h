@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <array>
 #include <vector>
+#include <tuple>
 
 template<typename T>
 static constexpr bool is_container_v = false;

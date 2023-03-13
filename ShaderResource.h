@@ -11,7 +11,9 @@ class ShaderResource
  public:
   ShaderResource(char const* name, DescriptorType type) : m_name(name), m_type(type) { }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const;
+#endif
 
   // Accessor.
   std::string const& name() const { return m_name; }

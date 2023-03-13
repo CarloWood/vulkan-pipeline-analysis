@@ -20,13 +20,11 @@ class ShaderStageFlags : public utils::BitSet<uint32_t>
 
   void reset()
   {
-    //DoutEntering(dc::notice, "ShaderStageFlags::reset()");
     m_bitmask = 1;
   }
 
   bool next()
   {
-    //DoutEntering(dc::notice, "ShaderStageFlags::next()");
     ++m_bitmask;
     return !test(Index{shader_stage_flags_end});
   }
@@ -37,6 +35,7 @@ class ShaderStageFlags : public utils::BitSet<uint32_t>
     m_bitmask = rn.generate(s_distribution);
   }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
     using namespace utils::bitset;
@@ -44,8 +43,9 @@ class ShaderStageFlags : public utils::BitSet<uint32_t>
     for (Index index = Index{shader_stage_flags_end} - 1; index >= index_begin; --index)
       result += test(index) ? '1' : '0';
 
-    os << TYPE_COLOR_BEGIN "ShaderStageFlags" TYPE_COLOR_END << "{" << result << "}";
+    os << TYPE_COLOR_BEGIN "ShaderStageFlags" TYPE_COLOR_END << " [" << this << "] {" << result << "}";
   }
+#endif
 
  private:
   static std::uniform_int_distribution<decltype(m_bitmask)> s_distribution;

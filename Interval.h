@@ -66,10 +66,12 @@ class Interval
       m_value = I{static_cast<size_t>(rn.generate(m_distribution))};
   }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
     os << TYPE_COLOR_BEGIN << demangled_name() << TYPE_COLOR_END << '{' << m_value << '}';
   }
+#endif
 
   I get_value() const
   {

@@ -59,7 +59,9 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
     return result;
   }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const;
+#endif
 
   SetIndexBindingSlots available_slots() const
   {

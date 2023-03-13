@@ -40,7 +40,9 @@ class SetIndexBindingSlot
   bool next();
   void randomize(utils::RandomNumber& rn);
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const;
+#endif
 
  private:
   ShaderModule* m_owner;

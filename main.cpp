@@ -8,17 +8,18 @@ int main()
 {
   Debug(NAMESPACE_DEBUG::init());
 
-  ShaderStageFlagBits f;
-  ShaderModule sm(f);
-  Declarations/*Pipeline*/ pipeline(&sm);
+  Pipeline pipeline;
 
 #if 1
-  int count = 0;
+  uint64_t count = 0;
   do
   {
     ++count;
 //    if (count > 8638025 - 100)
     Dout(dc::notice, pipeline);
+    if (count % (5509 * 5509) == 0)
+      //Dout(dc::notice, "count = " << (count / (5509 * 5509)));
+      std::cout << "count = " << (count / (5509 * 5509)) << std::endl;
   }
   while (pipeline.next());
 

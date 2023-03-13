@@ -31,7 +31,9 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
   AShaderResource(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
     m_owner(owner), m_vi(vi) { randomize(rn); }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const;
+#endif
 
  private:
   char const* demangled_name() const override

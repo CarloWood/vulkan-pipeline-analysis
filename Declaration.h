@@ -7,6 +7,7 @@
 #include "AShaderResource.h"
 #include "Generated.h"
 #include "utils/has_print_on.h"
+#include <tuple>
 
 class ShaderModule;
 
@@ -43,7 +44,9 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
     return m_a_shader_resource;
   }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const;
+#endif
 
  private:
   ShaderModule const* const m_owner;            // The ShaderModule that this Declaration instance is used in (fixed).

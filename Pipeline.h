@@ -15,7 +15,9 @@ class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>
   {
   }
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const;
+#endif
 
  private:
   std::array<Stage, number_of_stages> m_stages;         // stageCount, pStages.

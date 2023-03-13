@@ -1,6 +1,7 @@
 #include "sys.h"
 #include "Declaration.h"
 
+#ifdef CWDEBUG
 void Declaration::print_on(std::ostream& os) const
 {
   os << "\n        " TYPE_COLOR_BEGIN "Declaration" TYPE_COLOR_END "{";
@@ -9,3 +10,4 @@ void Declaration::print_on(std::ostream& os) const
       ",\n            a_shader_resource:" << m_a_shader_resource;
   os << '}';
 }
+#endif

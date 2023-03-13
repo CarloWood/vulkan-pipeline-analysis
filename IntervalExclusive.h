@@ -25,10 +25,12 @@ class IntervalExclusive
   bool next();
   void randomize(utils::RandomNumber& rn);
 
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
     os << TYPE_COLOR_BEGIN << demangled_name() << TYPE_COLOR_END << '{' << get_value() << '}';
   }
+#endif
 
   I get_value() const
   {

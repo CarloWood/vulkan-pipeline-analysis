@@ -29,7 +29,19 @@ class PipelineLayout : public Generated<std::tuple<std::vector<DescriptorSetLayo
     return true;
   }
 
+  void randomize(utils::RandomNumber& rn)
+  {
+    //DoutEntering(dc::notice, "Declarations::randomize()");
+    std::uniform_int_distribution<size_t> distribution(0, number_of_shader_resources - 1);
+    size_t new_size = rn.generate(distribution);
+    m_descriptor_set_layouts.clear();
+    m_descriptor_set_layouts.resize(new_size);
+    Generated::randomize(rn);
+  }
+
+#ifdef CWDEBUG
   void print_on(std::ostream& os) const;
+#endif
 
  private:
   // PipelineLayoutCreateInfo
