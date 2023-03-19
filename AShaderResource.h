@@ -3,6 +3,7 @@
 #include "ShaderResource.h"
 #include "DescriptorType.h"
 #include "IntervalExclusiveSorted.h"
+#include "DescriptorCount.h"
 #include "utils/has_print_on.h"
 #include "utils/Array.h"
 #include <cstdint>
@@ -31,6 +32,30 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
   AShaderResource(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
     m_owner(owner), m_vi(vi) { randomize(rn); }
 
+  void reset()
+  {
+    m_descriptor_count.reset();
+    IntervalExclusiveSorted<AShaderResourceIndex>::reset();
+  }
+
+  bool next()
+  {
+    if (m_descriptor_count.next())
+      return true;
+    if (IntervalExclusiveSorted<AShaderResourceIndex>::next())
+    {
+      m_descriptor_count.reset();
+      return true;
+    }
+    return false;
+  }
+
+  void randomize(utils::RandomNumber& rn)
+  {
+    m_descriptor_count.randomize(rn);
+    IntervalExclusiveSorted<AShaderResourceIndex>::randomize(rn);
+  }
+
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;
 #endif
@@ -54,4 +79,5 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
 
   ShaderModule* m_owner;
   int const m_vi;
+  DescriptorCount m_descriptor_count;
 };

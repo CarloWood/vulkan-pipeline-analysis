@@ -9,4 +9,9 @@ void ShaderModule::print_on(std::ostream& os) const
       ", declarations:" << m_declarations;
   os << '}';
 }
+
+void ShaderModule::print_on_short(std::ostream& os) const
+{
+  os << "ShaderModule stage " << m_stage;
+}
 #endif
