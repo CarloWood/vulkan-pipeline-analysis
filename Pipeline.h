@@ -3,23 +3,36 @@
 #include "PipelineLayout.h"
 #include "Stage.h"
 #include "Generated.h"
+#include "SetIndexBindingSlots.h"
 #include "utils/has_print_on.h"
 #include <array>
 
 using utils::has_print_on::operator<<;
 
-class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>&, PipelineLayout&>>
+namespace category {
+struct Slot;
+} // namespace category
+using SlotIndex = utils::VectorIndex<category::Slot>;
+
+class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>& /*, PipelineLayout&*/>>
 {                                                       // vk::GraphicsPipelineCreateInfo element(s).
  public:
-  Pipeline() : Generated("Pipeline", std::forward_as_tuple(m_stages, m_layout)), m_stages{ stage0, stage1, stage2 }
+  static constexpr SlotIndex number_of_slots{static_cast<size_t>(SetIndexBindingSlots::index_end())};
+
+  Pipeline() : Generated("Pipeline", std::forward_as_tuple(m_stages /*, m_layout*/)),
+      m_stages{{ { this, stage0 }, { this, stage1 }, { this, stage2 } }}
   {
   }
+
+  ShaderModule const* acquire_slot(ShaderModule const* shader_module, SetIndexBindingSlots::bitset_type slot);
+  void release_slot(ShaderModule const* shader_module, SetIndexBindingSlots::bitset_type slot);
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;
 #endif
 
  private:
-  std::array<Stage, number_of_stages> m_stages;         // stageCount, pStages.
-  PipelineLayout m_layout;                              // layout.
+  std::array<ShaderModule const*, number_of_slots.get_value()> m_slot_owner{};  // The ShaderModule that first used a given slot.
+  std::array<Stage, number_of_stages> m_stages;                                 // stageCount, pStages.
+//  PipelineLayout m_layout;                                                    // layout.
 };

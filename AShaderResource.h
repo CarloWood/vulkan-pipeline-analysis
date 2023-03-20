@@ -13,6 +13,7 @@ static constexpr DescriptorTypeIndex uniform_buffer_type = descriptor_type_begin
 static constexpr DescriptorTypeIndex texture_type = descriptor_type_begin + 1;
 
 class ShaderModule;
+class Declaration;
 
 namespace category {
 struct AShaderResource;
@@ -26,35 +27,15 @@ using utils::has_print_on::operator<<;
 class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
 {
  public:
-  AShaderResource(ShaderModule* owner, int vi) :
+  AShaderResource(Declaration const* owner, int vi) :
     m_owner(owner), m_vi(vi) { reset(); }
 
-  AShaderResource(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
+  AShaderResource(Declaration const* owner, utils::RandomNumber& rn, int vi) :
     m_owner(owner), m_vi(vi) { randomize(rn); }
 
-  void reset()
-  {
-    m_descriptor_count.reset();
-    IntervalExclusiveSorted<AShaderResourceIndex>::reset();
-  }
-
-  bool next()
-  {
-    if (m_descriptor_count.next())
-      return true;
-    if (IntervalExclusiveSorted<AShaderResourceIndex>::next())
-    {
-      m_descriptor_count.reset();
-      return true;
-    }
-    return false;
-  }
-
-  void randomize(utils::RandomNumber& rn)
-  {
-    m_descriptor_count.randomize(rn);
-    IntervalExclusiveSorted<AShaderResourceIndex>::randomize(rn);
-  }
+  void reset();
+  bool next();
+  void randomize(utils::RandomNumber& rn);
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;
@@ -69,6 +50,12 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
   AShaderResourceIndex get_sorted_begin() const override;
   AShaderResourceIndex get_sorted_end() const override;
 
+  void copy_from(AShaderResource const& other)
+  {
+    m_vi = other.m_vi;
+    m_descriptor_count = other.m_descriptor_count;
+  }
+
   int get_vi() const override
   {
     return m_vi;
@@ -77,7 +64,7 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
  private:
   static utils::Array<ShaderResource, number_of_shader_resources, AShaderResourceIndex> const s_shader_resources;
 
-  ShaderModule* m_owner;
-  int const m_vi;
+  Declaration const* const m_owner;
+  int m_vi;
   DescriptorCount m_descriptor_count;
 };

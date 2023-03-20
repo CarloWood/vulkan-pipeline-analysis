@@ -17,10 +17,13 @@ class SetIndexBindingSlot
 
   SetIndexBindingSlot(ShaderModule* owner, int vi) : m_owner(owner), m_vi(vi) { reset(); }
 
-  SetIndexBindingSlot(ShaderModule* owner, utils::RandomNumber& rn, int vi) : m_owner(owner), m_vi(vi) { randomize(rn); }
+  SetIndexBindingSlot(ShaderModule* owner, utils::RandomNumber& rn, int vi) : m_owner(owner), m_vi(vi), m_previous_stage(nullptr)
+  {
+    randomize(rn);
+  }
 
   // Encode the value of set_index and binding into a single bit.
-  SetIndexBindingSlot(SetIndex set_index, Binding binding) : m_owner(nullptr), m_vi(-1)
+  SetIndexBindingSlot(SetIndex set_index, Binding binding) : m_owner(nullptr), m_vi(-1), m_previous_stage(nullptr)
   {
     int8_t offset = set_index.get_value() - set_index_begin;
     utils::bitset::Index set_index_index = utils::bitset::IndexPOD{offset};
@@ -36,6 +39,11 @@ class SetIndexBindingSlot
     return { bit_index / binding_width, bit_index % binding_width };
   }
 
+  ShaderModule const* previous_stage() const
+  {
+    return m_previous_stage;
+  }
+
   void reset();
   bool next();
   void randomize(utils::RandomNumber& rn);
@@ -49,4 +57,6 @@ class SetIndexBindingSlot
   int const m_vi;
   const_iterator m_available_slots_iter;
   slot_as_bit_type m_slot_as_bit;
+  ShaderModule const* m_previous_stage;         // The previous stage that m_slot_as_bit was first used in,
+                                                // or nullptr if no previous stage is using it.
 };

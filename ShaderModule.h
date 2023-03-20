@@ -13,10 +13,13 @@ using utils::bitset::index_begin;
 
 using utils::has_print_on::operator<<;
 
+class Pipeline;
+
 class ShaderModule : public Generated<std::tuple<Declarations&>>
 {
  public:
-  ShaderModule(ShaderStageFlagBits stage) : Generated("ShaderModule", std::forward_as_tuple(m_declarations)), m_stage(stage), m_declarations(this)
+  ShaderModule(Pipeline* owner, ShaderStageFlagBits stage) :
+    Generated("ShaderModule", std::forward_as_tuple(m_declarations)), m_owner(owner), m_stage(stage), m_declarations(this)
   {
     ASSERT(index_begin <= stage && stage < index_end);
   }
@@ -26,15 +29,8 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
     m_available_slots.allow_all();
   }
 
-  void mark_used_slots(SetIndexBindingSlots::bitset_type slots)
-  {
-    m_available_slots.mark_used(slots);
-  }
-
-  void mark_unused_slots(SetIndexBindingSlots::bitset_type slots)
-  {
-    m_available_slots.mark_unused(slots);
-  }
+  ShaderModule const* mark_used_slot(SetIndexBindingSlots::bitset_type slot);
+  void mark_unused_slot(SetIndexBindingSlots::bitset_type slot, bool we_are_owner);
 
   void set_number_of_declarations(int number_of_declarations)
   {
@@ -70,6 +66,7 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
   }
 
  private:
+  Pipeline* m_owner;                            // Pointer back to the pipeline.
   ShaderStageFlagBits const m_stage;            // The stage that this shader module is intended for (fixed).
   SetIndexBindingSlots m_available_slots;       // The set index / binding slots that are not used yet.
   int m_number_of_declarations;                 // The current number of declarations this ShaderModule has, updated by Declarations:

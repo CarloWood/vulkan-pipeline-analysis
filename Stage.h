@@ -27,7 +27,7 @@ class Stage : public Generated<std::tuple<ShaderModule&>>
   }
 #endif
 
-  Stage(ShaderStageFlagBits id) : Generated("Stage", std::forward_as_tuple(m_module)), m_module(id) { }
+  Stage(Pipeline* owner, ShaderStageFlagBits id) : Generated("Stage", std::forward_as_tuple(m_module)), m_module(owner, id) { }
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;

@@ -1,15 +1,48 @@
 #include "sys.h"
 #include "AShaderResource.h"
 #include "ShaderModule.h"
+#include "Declaration.h"
+
+void AShaderResource::reset()
+{
+  ShaderModule const* previous_stage_using_slot = m_owner->previous_stage_using_slot();
+//FIXME  if (previous_stage_using_slot)
+//    copy_from(*previous_stage_using_slot);
+//  else
+  {
+    m_descriptor_count.reset();
+    IntervalExclusiveSorted<AShaderResourceIndex>::reset();
+  }
+}
+
+bool AShaderResource::next()
+{
+  if (m_owner->previous_stage_using_slot())
+    return false;
+  if (m_descriptor_count.next())
+    return true;
+  if (IntervalExclusiveSorted<AShaderResourceIndex>::next())
+  {
+    m_descriptor_count.reset();
+    return true;
+  }
+  return false;
+}
+
+void AShaderResource::randomize(utils::RandomNumber& rn)
+{
+  m_descriptor_count.randomize(rn);
+  IntervalExclusiveSorted<AShaderResourceIndex>::randomize(rn);
+}
 
 AShaderResourceIndex AShaderResource::get_sorted_begin() const
 {
-  return m_owner->get_sorted_begin(m_vi, s_shader_resources.ibegin());
+  return m_owner->shader_module()->get_sorted_begin(m_vi, s_shader_resources.ibegin());
 }
 
 AShaderResourceIndex AShaderResource::get_sorted_end() const
 {
-  return m_owner->get_sorted_end(m_vi, s_shader_resources.iend());
+  return m_owner->shader_module()->get_sorted_end(m_vi, s_shader_resources.iend());
 }
 
 #ifdef CWDEBUG

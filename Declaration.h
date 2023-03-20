@@ -25,11 +25,11 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
  public:
   Declaration(ShaderModule* owner, int vi) :
     Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
-    m_owner(owner), m_set_index_binding_slot(owner, vi), m_a_shader_resource(owner, vi) { }
+    m_owner(owner), m_set_index_binding_slot(owner, vi), m_a_shader_resource(this, vi) { }
 
   Declaration(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
     Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
-    m_owner(owner), m_set_index_binding_slot(owner, rn, vi), m_a_shader_resource(owner, rn, vi) { }
+    m_owner(owner), m_set_index_binding_slot(owner, rn, vi), m_a_shader_resource(this, rn, vi) { }
 
   Declaration(Declaration const*) = delete;
   Declaration(Declaration&& orig) :
@@ -44,12 +44,22 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
     return m_a_shader_resource;
   }
 
+  ShaderModule* shader_module() const
+  {
+    return m_owner;
+  }
+
+  ShaderModule const* previous_stage_using_slot() const
+  {
+    return m_set_index_binding_slot.previous_stage();
+  }
+
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;
 #endif
 
  private:
-  ShaderModule const* const m_owner;            // The ShaderModule that this Declaration instance is used in (fixed).
+  ShaderModule* const m_owner;                  // The ShaderModule that this Declaration instance is used in (fixed).
   SetIndexBindingSlot m_set_index_binding_slot; // The set index and binding number that this declaration uses.
   AShaderResource m_a_shader_resource;          // The shader resource that is expected to be bound.
 };

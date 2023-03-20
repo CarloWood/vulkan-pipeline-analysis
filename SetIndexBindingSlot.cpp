@@ -8,17 +8,20 @@ void SetIndexBindingSlot::reset()
   m_available_slots_iter = m_owner->available_slots().unused_set_index_binding_slots()();
   m_slot_as_bit = *m_available_slots_iter;
   //Dout(dc::finish, *this);
-  m_owner->mark_used_slots(m_slot_as_bit);
+  m_previous_stage = m_owner->mark_used_slot(m_slot_as_bit);
 }
 
 bool SetIndexBindingSlot::next()
 {
   //Dout(dc::notice|continued_cf, "SetIndexBindingSlot::next(" << m_vi << ") --> ");
-  m_owner->mark_unused_slots(m_slot_as_bit);
+  m_owner->mark_unused_slot(m_slot_as_bit, !m_previous_stage);
+  m_previous_stage = nullptr;
   m_slot_as_bit = *++m_available_slots_iter;
   //Dout(dc::finish, *this);
-  m_owner->mark_used_slots(m_slot_as_bit);
-  return m_slot_as_bit.any();
+  bool success = m_slot_as_bit.any();
+  if (success)
+    m_previous_stage = m_owner->mark_used_slot(m_slot_as_bit);
+  return success;
 }
 
 void SetIndexBindingSlot::randomize(utils::RandomNumber& rn)
@@ -35,7 +38,7 @@ void SetIndexBindingSlot::randomize(utils::RandomNumber& rn)
     --bit;
   }
   m_slot_as_bit = *m_available_slots_iter;
-  m_owner->mark_used_slots(m_slot_as_bit);
+  m_owner->mark_used_slot(m_slot_as_bit);
 }
 
 #ifdef CWDEBUG
