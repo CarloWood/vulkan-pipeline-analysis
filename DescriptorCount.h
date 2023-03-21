@@ -14,25 +14,27 @@ class DescriptorCount
 
   void reset()
   {
-    //DoutEntering(dc::notice, "DescriptorCount::reset()");
+    DoutEntering(dc::debug, "DescriptorCount::reset() [" << this << "]");
     m_count = -1;
   }
 
   bool next()
   {
-    //DoutEntering(dc::notice, "DescriptorCount::next()");
+    DoutEntering(dc::debug|continued_cf, "DescriptorCount::next() [" << this << "] = ");
+    bool result = true;
     if (m_count > 1)
-      return false;     // We reached the end of this "range".
-    if (m_count == -1)
+      result = false;     // We reached the end of this "range".
+    else if (m_count == -1)
       m_count = 1;
     else
       m_count = 7;      // Just any value larger than 1. This is the array size.
-    return true;
+    Dout(dc::finish, std::boolalpha << result);
+    return result;
   }
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::notice, "DescriptorCount::randomize()");
+    //DoutEntering(dc::debug, "DescriptorCount::randomize()");
     static std::array<int, 3> values = { -1, 1, 7 };
     m_count = values[rn.generate(s_distribution)];
   }
@@ -40,7 +42,7 @@ class DescriptorCount
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
-    os << TYPE_COLOR_BEGIN "DescriptorCount" TYPE_COLOR_END << "{" << m_count << "}";
+    os << PRINT_TYPE("DescriptorCount") << '{' << m_count << '}';
   }
 #endif
 

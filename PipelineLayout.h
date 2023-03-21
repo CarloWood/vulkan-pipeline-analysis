@@ -15,23 +15,29 @@ class PipelineLayout : public Generated<std::tuple<std::vector<DescriptorSetLayo
 
   void reset()
   {
+    DoutEntering(dc::debug, "PipelineLayout::reset() [" << this << "]");
     m_descriptor_set_layouts.clear();
   }
 
   bool next()
   {
-    if (Generated::next())
-      return true;
-    size_t new_size = m_descriptor_set_layouts.size() + 1;
-    if (new_size > number_of_shader_resources)
-      return false;
-    m_descriptor_set_layouts = std::vector<DescriptorSetLayout>(new_size);
-    return true;
+    DoutEntering(dc::debug|continued_cf, "PipelineLayout::next() [" << this << "] = ");
+    bool result = true;
+    if (!Generated::next())
+    {
+      size_t new_size = m_descriptor_set_layouts.size() + 1;
+      if (new_size > number_of_shader_resources)
+        result = false;
+      else
+        m_descriptor_set_layouts = std::vector<DescriptorSetLayout>(new_size);
+    }
+    Dout(dc::finish, std::boolalpha << result);
+    return result;
   }
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::notice, "Declarations::randomize()");
+    //DoutEntering(dc::debug, "Declarations::randomize()");
     std::uniform_int_distribution<size_t> distribution(0, number_of_shader_resources - 1);
     size_t new_size = rn.generate(distribution);
     m_descriptor_set_layouts.clear();

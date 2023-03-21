@@ -31,7 +31,7 @@ class ShaderStageFlags : public utils::BitSet<uint32_t>
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::notice, "ShaderStageFlags::randomize()");
+    //DoutEntering(dc::debug, "ShaderStageFlags::randomize()");
     m_bitmask = rn.generate(s_distribution);
   }
 
@@ -43,7 +43,7 @@ class ShaderStageFlags : public utils::BitSet<uint32_t>
     for (Index index = Index{shader_stage_flags_end} - 1; index >= index_begin; --index)
       result += test(index) ? '1' : '0';
 
-    os << TYPE_COLOR_BEGIN "ShaderStageFlags" TYPE_COLOR_END << "{" << result << "}";
+    os << PRINT_TYPE("ShaderStageFlags") << '{' << result << "}";
   }
 #endif
 
@@ -60,13 +60,17 @@ class ShaderStageFlagBits : public ShaderStageFlags::Index
 
   void reset()
   {
+    DoutEntering(dc::debug, "ShaderStageFlagBits::reset() [" << this << "]");
     m_index = 0;
   }
 
   bool next()
   {
+    DoutEntering(dc::debug|continued_cf, "ShaderStageFlagBits::next() [" << this << "]");
     ++m_index;
-    return m_index < number_of_stages;
+    bool result = m_index < number_of_stages;
+    Dout(dc::finish, std::boolalpha << result);
+    return result;
   }
 };
 

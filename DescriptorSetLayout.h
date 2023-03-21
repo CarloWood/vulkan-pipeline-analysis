@@ -21,30 +21,38 @@ class DescriptorSetLayout : public Generated<std::tuple<std::vector<DescriptorSe
 
   void reset()
   {
+    DoutEntering(dc::debug, "DescriptorSetLayout::reset() [" << this << "]");
     m_descriptor_set_layout_bindings.clear();
   }
 
   bool next()
   {
-    if (Generated::next())
-      return true;
-    size_t new_size = m_descriptor_set_layout_bindings.size() + 1;
-    if (new_size > number_of_shader_resources)
-      return false;
-    std::vector<DescriptorSetLayoutBinding> new_descriptor_set_layout_bindings;
-    new_descriptor_set_layout_bindings.reserve(new_size);
-    m_number_of_descriptor_set_layout_bindings = new_size;
-    m_current_descriptor_set_layout_binding_vector = &new_descriptor_set_layout_bindings;
-    for (int i = 0; i < new_size; ++i)
-      new_descriptor_set_layout_bindings.emplace_back(this, i);
-    m_descriptor_set_layout_bindings = std::move(new_descriptor_set_layout_bindings);
-    m_current_descriptor_set_layout_binding_vector = &m_descriptor_set_layout_bindings;
-    return true;
+    DoutEntering(dc::debug|continued_cf, "DescriptorSetLayout::next() [" << this << "] = ");
+    bool result = true;
+    if (!Generated::next())
+    {
+      size_t new_size = m_descriptor_set_layout_bindings.size() + 1;
+      if (new_size > number_of_shader_resources)
+        result = false;
+      else
+      {
+        std::vector<DescriptorSetLayoutBinding> new_descriptor_set_layout_bindings;
+        new_descriptor_set_layout_bindings.reserve(new_size);
+        m_number_of_descriptor_set_layout_bindings = new_size;
+        m_current_descriptor_set_layout_binding_vector = &new_descriptor_set_layout_bindings;
+        for (int i = 0; i < new_size; ++i)
+          new_descriptor_set_layout_bindings.emplace_back(this, i);
+        m_descriptor_set_layout_bindings = std::move(new_descriptor_set_layout_bindings);
+        m_current_descriptor_set_layout_binding_vector = &m_descriptor_set_layout_bindings;
+      }
+    }
+    Dout(dc::finish, result);
+    return result;
   }
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::notice, "DescriptorSetLayout::randomize()");
+    //DoutEntering(dc::debug, "DescriptorSetLayout::randomize()");
     std::uniform_int_distribution<size_t> distribution(0, number_of_shader_resources - 1);
     size_t new_size = rn.generate(distribution);
     std::vector<DescriptorSetLayoutBinding> new_descriptor_set_layout_bindings;

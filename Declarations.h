@@ -2,16 +2,16 @@
 
 #include "Declaration.h"
 #include "Generated.h"
-#include <vector>
+#include <deque>
 
-class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
+class Declarations : public Generated<std::tuple<std::deque<Declaration>&>>
 {
  public:
   Declarations(ShaderModule* owner) : Generated("Declarations", std::forward_as_tuple(m_declarations)), m_owner(owner) { reset(); }
 
   void reset()
   {
-    //DoutEntering(dc::notice, "Declarations::reset()");
+    DoutEntering(dc::debug, "Declarations::reset() [" << this << "]");
     m_declarations.clear();
   }
 
@@ -21,13 +21,13 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
-    os << TYPE_COLOR_BEGIN "Declarations" TYPE_COLOR_END << "{";
+    os << PRINT_TYPE("Declarations") << '{';
     os << "declarations:" << m_declarations;
     os << '}';
   }
 #endif
 
-  std::vector<Declaration> const& declarations() const
+  std::deque<Declaration> const& declarations() const
   {
     return m_declarations;
   }
@@ -35,5 +35,5 @@ class Declarations : public Generated<std::tuple<std::vector<Declaration>&>>
  private:
   static std::uniform_int_distribution<size_t> s_distribution;
   ShaderModule* const m_owner;                  // The ShaderModule that these Declarations are used in (fixed).
-  std::vector<Declaration> m_declarations;
+  std::deque<Declaration> m_declarations;
 };

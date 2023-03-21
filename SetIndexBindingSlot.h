@@ -3,6 +3,7 @@
 #include "SetIndexBindingSlots.h"
 
 class ShaderModule;
+class Declaration;
 
 class SetIndexBindingSlot
 {
@@ -15,9 +16,13 @@ class SetIndexBindingSlot
   static constexpr utils::bitset::Index index_end = utils::bitset::Index{set_index_end} * binding_width;
   static constexpr slot_as_bit_type end{index_end};
 
-  SetIndexBindingSlot(ShaderModule* owner, int vi) : m_owner(owner), m_vi(vi) { reset(); }
+  SetIndexBindingSlot(Declaration* owner, int vi) : m_owner(owner), m_vi(vi)
+  {
+    DoutEntering(dc::debug, "SetIndexBindingSlot(...) [" << this << "]");
+    reset();
+  }
 
-  SetIndexBindingSlot(ShaderModule* owner, utils::RandomNumber& rn, int vi) : m_owner(owner), m_vi(vi), m_previous_stage(nullptr)
+  SetIndexBindingSlot(Declaration* owner, utils::RandomNumber& rn, int vi) : m_owner(owner), m_vi(vi), m_previous_stage(nullptr)
   {
     randomize(rn);
   }
@@ -39,8 +44,9 @@ class SetIndexBindingSlot
     return { bit_index / binding_width, bit_index % binding_width };
   }
 
-  ShaderModule const* previous_stage() const
+  Declaration const* previous_stage() const
   {
+    DoutEntering(dc::debug, "SetIndexBindingSlot::previous_stage() [" << this << "] = " << m_previous_stage << " [" << &m_previous_stage << "]");
     return m_previous_stage;
   }
 
@@ -53,10 +59,9 @@ class SetIndexBindingSlot
 #endif
 
  private:
-  ShaderModule* m_owner;
+  Declaration* m_owner;
   int const m_vi;
   const_iterator m_available_slots_iter;
   slot_as_bit_type m_slot_as_bit;
-  ShaderModule const* m_previous_stage;         // The previous stage that m_slot_as_bit was first used in,
-                                                // or nullptr if no previous stage is using it.
+  Declaration const* m_previous_stage;          // If m_slot_as_bit was first used in a previous stage, then this is set to that previous stage.
 };

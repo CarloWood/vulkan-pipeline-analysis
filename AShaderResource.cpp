@@ -5,10 +5,11 @@
 
 void AShaderResource::reset()
 {
-  ShaderModule const* previous_stage_using_slot = m_owner->previous_stage_using_slot();
-//FIXME  if (previous_stage_using_slot)
-//    copy_from(*previous_stage_using_slot);
-//  else
+  DoutEntering(dc::debug, "AShaderResource::reset() [" << this << "]");
+  Declaration const* previous_stage_using_slot = m_owner->previous_stage_using_slot();
+  if (previous_stage_using_slot)
+    copy_from(previous_stage_using_slot->a_shader_resource());
+  else
   {
     m_descriptor_count.reset();
     IntervalExclusiveSorted<AShaderResourceIndex>::reset();
@@ -17,16 +18,19 @@ void AShaderResource::reset()
 
 bool AShaderResource::next()
 {
+  DoutEntering(dc::debug|continued_cf, "AShaderResource::next() [" << this << "] = ");
+  bool result = false;
   if (m_owner->previous_stage_using_slot())
-    return false;
-  if (m_descriptor_count.next())
-    return true;
-  if (IntervalExclusiveSorted<AShaderResourceIndex>::next())
+    result = false;
+  else if (m_descriptor_count.next())
+    result = true;
+  else if (IntervalExclusiveSorted<AShaderResourceIndex>::next())
   {
     m_descriptor_count.reset();
-    return true;
+    result = true;
   }
-  return false;
+  Dout(dc::finish, std::boolalpha << result);
+  return result;
 }
 
 void AShaderResource::randomize(utils::RandomNumber& rn)
@@ -48,7 +52,7 @@ AShaderResourceIndex AShaderResource::get_sorted_end() const
 #ifdef CWDEBUG
 void AShaderResource::print_on(std::ostream& os) const
 {
-  os << TYPE_COLOR_BEGIN "AShaderResource" TYPE_COLOR_END "{";
+  os << PRINT_TYPE("AShaderResource") << '{';
   os << "current_shader_resource:\"" << s_shader_resources[get_value()].name() << '"';
   os << ", descriptor_count:" << m_descriptor_count;
   os << "} (" << m_vi << ")";

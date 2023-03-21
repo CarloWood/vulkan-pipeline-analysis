@@ -4,7 +4,7 @@
 #ifdef CWDEBUG
 void Stage::print_on(std::ostream& os) const
 {
-  os << "\n    " TYPE_COLOR_BEGIN "Stage" TYPE_COLOR_END "{";
+  os << "\n    " << PRINT_TYPE("Stage") << '{';
   os << "module:" << m_module;
   os << '}';
 }

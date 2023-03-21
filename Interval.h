@@ -41,22 +41,23 @@ class Interval
 
   void reset()
   {
-    //DoutEntering(dc::notice, demangled_name() << "::reset()");
+    DoutEntering(dc::debug, demangled_name() << "::reset() [" << this << "]");
     m_value = m_begin;
   }
 
   bool next()
   {
-    //DoutEntering(dc::notice, demangled_name() << "::next()");
-    //Dout(dc::notice, "m_value = " << m_value);
+    DoutEntering(dc::debug|continued_cf, demangled_name() << "::next() [" << this << "] = ");
+    Dout(dc::debug, "m_value " << m_value << " --> " << (m_value + 1));
     ++m_value;
-    //Dout(dc::notice, "m_value = " << m_value);
-    return m_value < m_end;
+    bool result = m_value < m_end;
+    Dout(dc::finish, std::boolalpha << result);
+    return result;
   }
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::notice, demangled_name() << "::randomize()");
+    //DoutEntering(dc::debug, demangled_name() << "::randomize()");
     if constexpr (std::is_same_v<I, utils::bitset::Index>)
     {
       utils::bitset::IndexPOD index{rn.generate(m_distribution)};
@@ -69,7 +70,7 @@ class Interval
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
-    os << TYPE_COLOR_BEGIN << demangled_name() << TYPE_COLOR_END << '{' << m_value << '}';
+    os << PRINT_TYPE(demangled_name()) << '{' << m_value << '}';
   }
 #endif
 

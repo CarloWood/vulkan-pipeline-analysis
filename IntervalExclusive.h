@@ -28,7 +28,7 @@ class IntervalExclusive
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const
   {
-    os << TYPE_COLOR_BEGIN << demangled_name() << TYPE_COLOR_END << '{' << get_value() << '}';
+    os << PRINT_TYPE(demangled_name()) << '{' << get_value() << '}';
   }
 #endif
 
@@ -56,7 +56,7 @@ template<typename I>
 void IntervalExclusive<I>::reset()
 {
 #if 0 //def CWDEBUG
-  DoutEntering(dc::notice|continued_cf, demangled_name() << "::reset(");
+  DoutEntering(dc::debug|continued_cf, demangled_name() << "::reset(");
   int vi = get_vi();
   if (vi != -1)
     Dout(dc::continued, vi);
@@ -71,7 +71,7 @@ template<typename I>
 bool IntervalExclusive<I>::next()
 {
 #if 0 //def CWDEBUG
-  Dout(dc::notice|continued_cf, demangled_name() << "::next(");
+  Dout(dc::debug|continued_cf, demangled_name() << "::next(");
   int vi = get_vi();
   if (vi != -1)
     Dout(dc::continued, vi);

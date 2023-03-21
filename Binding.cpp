@@ -4,12 +4,12 @@
 
 BindingIndex Binding::get_sorted_begin() const
 {
-  //DoutEntering(dc::notice, "Binding::get_sorted_begin() [" << this << "]");
+  //DoutEntering(dc::debug, "Binding::get_sorted_begin() [" << this << "]");
   return m_owner->get_sorted_begin(m_vi, binding_begin);
 }
 
 BindingIndex Binding::get_sorted_end() const
 {
-  //DoutEntering(dc::notice, "Binding::get_sorted_end() [" << this << "]");
+  //DoutEntering(dc::debug, "Binding::get_sorted_end() [" << this << "]");
   return m_owner->get_sorted_end(m_vi, binding_end);
 }

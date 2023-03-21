@@ -7,6 +7,8 @@
 #include "utils/has_print_on.h"
 #include <array>
 
+class Declaration;
+
 using utils::has_print_on::operator<<;
 
 namespace category {
@@ -24,15 +26,15 @@ class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>
   {
   }
 
-  ShaderModule const* acquire_slot(ShaderModule const* shader_module, SetIndexBindingSlots::bitset_type slot);
-  void release_slot(ShaderModule const* shader_module, SetIndexBindingSlots::bitset_type slot);
+  Declaration const* acquire_slot(Declaration const* current_declaration, SetIndexBindingSlots::bitset_type slot);
+  void release_slot(Declaration const* current_declaration, SetIndexBindingSlots::bitset_type slot);
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;
 #endif
 
  private:
-  std::array<ShaderModule const*, number_of_slots.get_value()> m_slot_owner{};  // The ShaderModule that first used a given slot.
+  std::array<Declaration const*, number_of_slots.get_value()> m_slot_owner{};  // The Declaration that first used a given slot.
   std::array<Stage, number_of_stages> m_stages;                                 // stageCount, pStages.
 //  PipelineLayout m_layout;                                                    // layout.
 };

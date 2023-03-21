@@ -52,8 +52,12 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
 
   void copy_from(AShaderResource const& other)
   {
+    DoutEntering(dc::debug, "AShaderResource::copy_from(" << &other << ") [" << this << "]");
+
+    m_value = other.m_value;
     m_vi = other.m_vi;
     m_descriptor_count = other.m_descriptor_count;
+    Dout(dc::debug, "m_vi = " << m_vi << "; m_descriptor_count = " << m_descriptor_count);
   }
 
   int get_vi() const override

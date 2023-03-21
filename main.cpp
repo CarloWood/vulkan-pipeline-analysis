@@ -12,14 +12,15 @@ int main()
 
 #if 1
   uint64_t count = 0;
+  Debug(dc::debug.off());
   do
   {
     ++count;
-//    if (count > 8638025 - 100)
-    Dout(dc::notice, pipeline);
-    if (count % (5509 * 5509) == 0)
-      //Dout(dc::notice, "count = " << (count / (5509 * 5509)));
-      std::cout << "count = " << (count / (5509 * 5509)) << std::endl;
+//    if (count == 305567)
+//      Debug(dc::debug.on());
+    Dout(dc::notice, count << " : " << pipeline);
+//    if (count == 305568)
+//      break;
   }
   while (pipeline.next());
 

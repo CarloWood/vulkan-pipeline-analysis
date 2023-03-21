@@ -16,6 +16,9 @@ static constexpr bool is_container_v<std::array<T, S>> = true;
 template<typename T>
 static constexpr bool is_container_v<std::vector<T>> = true;
 
+template<typename T>
+static constexpr bool is_container_v<std::deque<T>> = true;
+
 template<typename Tuple>
 class Generated;
 
@@ -30,19 +33,21 @@ class Generated<std::tuple<Args&...>>
 
   void reset()
   {
-    //DoutEntering(dc::notice, m_name << "::reset()");
+    DoutEntering(dc::debug, m_name << "::reset() [" << this << "]");
     reset_<0>();
   }
 
   bool next()
   {
-    //DoutEntering(dc::notice, m_name << "::next()");
-    return next_<sizeof...(Args) - 1>();
+    DoutEntering(dc::debug|continued_cf, m_name << "::next() [" << this << "] = ");
+    bool result = next_<sizeof...(Args) - 1>();
+    Dout(dc::finish, std::boolalpha << result);
+    return result;
   }
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::notice, m_name << "::randomize()");
+    //DoutEntering(dc::debug, m_name << "::randomize()");
     randomize_<0>(rn);
   }
 
@@ -50,6 +55,7 @@ class Generated<std::tuple<Args&...>>
   template<std::size_t I>
   void reset_()
   {
+    DoutEntering(dc::debug, m_name << "::reset_<" << I << ">() [" << this << "]");
     if constexpr (sizeof...(Args) == 0)
       return;
     else if constexpr (is_container_v<std::decay_t<decltype(std::get<I>(members_))>>)
@@ -67,6 +73,7 @@ class Generated<std::tuple<Args&...>>
   template<std::size_t I>
   bool next_()
   {
+    DoutEntering(dc::debug, m_name << "::next_<" << I << ">() [" << this << "]");
     bool success = true;
     if constexpr (sizeof...(Args) == 0)
       return false;

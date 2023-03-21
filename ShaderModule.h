@@ -29,15 +29,15 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
     m_available_slots.allow_all();
   }
 
-  ShaderModule const* mark_used_slot(SetIndexBindingSlots::bitset_type slot);
-  void mark_unused_slot(SetIndexBindingSlots::bitset_type slot, bool we_are_owner);
+  Declaration const* mark_used_slot(Declaration const* current_declaration, SetIndexBindingSlots::bitset_type slot);
+  void mark_unused_slot(Declaration const* current_declaration, SetIndexBindingSlots::bitset_type slot, bool we_are_owner);
 
   void set_number_of_declarations(int number_of_declarations)
   {
     m_number_of_declarations = number_of_declarations;
   }
 
-  void set_current_declaration_vector(std::vector<Declaration> const* declaration_vector)
+  void set_current_declaration_vector(std::deque<Declaration> const* declaration_vector)
   {
     m_declaration_vector = declaration_vector;
   }
@@ -70,6 +70,6 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
   ShaderStageFlagBits const m_stage;            // The stage that this shader module is intended for (fixed).
   SetIndexBindingSlots m_available_slots;       // The set index / binding slots that are not used yet.
   int m_number_of_declarations;                 // The current number of declarations this ShaderModule has, updated by Declarations:
-  std::vector<Declaration> const* m_declaration_vector; // Points to the currently built vector, or the completed one in m_declarations.
+  std::deque<Declaration> const* m_declaration_vector; // Points to the currently built vector, or the completed one in m_declarations.
   Declarations m_declarations;                  // The declarations that this shader module is using.
 };
