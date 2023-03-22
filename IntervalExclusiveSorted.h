@@ -66,7 +66,7 @@ class IntervalExclusiveSorted
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::debug, demangled_name() << "::randomize()");
+    DoutEntering(dc::debug, demangled_name() << "::randomize() [" << this << "]");
     m_begin = get_sorted_begin();
     m_end = get_sorted_end();
     ASSERT(m_begin < m_end);

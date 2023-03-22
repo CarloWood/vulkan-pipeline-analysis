@@ -24,6 +24,7 @@ class SetIndexBindingSlot
 
   SetIndexBindingSlot(Declaration* owner, utils::RandomNumber& rn, int vi) : m_owner(owner), m_vi(vi), m_previous_stage(nullptr)
   {
+    m_slot_as_bit.reset();
     randomize(rn);
   }
 

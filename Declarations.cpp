@@ -28,7 +28,7 @@ bool Declarations::next()
 
 void Declarations::randomize(utils::RandomNumber& rn)
 {
-  //DoutEntering(dc::debug, "Declarations::randomize()");
+  DoutEntering(dc::debug, "Declarations::randomize() [" << this << "]");
   m_owner->allow_all();
   size_t new_size = rn.generate(s_distribution);
   std::deque<Declaration> new_declarations;

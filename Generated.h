@@ -47,7 +47,7 @@ class Generated<std::tuple<Args&...>>
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::debug, m_name << "::randomize()");
+    DoutEntering(dc::debug, m_name << "::randomize() [" << this << "]");
     randomize_<0>(rn);
   }
 

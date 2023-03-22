@@ -52,7 +52,7 @@ class DescriptorSetLayout : public Generated<std::tuple<std::vector<DescriptorSe
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::debug, "DescriptorSetLayout::randomize()");
+    DoutEntering(dc::debug, "DescriptorSetLayout::randomize() [" << this << "]");
     std::uniform_int_distribution<size_t> distribution(0, number_of_shader_resources - 1);
     size_t new_size = rn.generate(distribution);
     std::vector<DescriptorSetLayoutBinding> new_descriptor_set_layout_bindings;

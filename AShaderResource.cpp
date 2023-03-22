@@ -35,8 +35,15 @@ bool AShaderResource::next()
 
 void AShaderResource::randomize(utils::RandomNumber& rn)
 {
-  m_descriptor_count.randomize(rn);
-  IntervalExclusiveSorted<AShaderResourceIndex>::randomize(rn);
+  DoutEntering(dc::debug, "AShaderResource::randomize() [" << this << "]");
+  Declaration const* previous_stage_using_slot = m_owner->previous_stage_using_slot();
+  if (previous_stage_using_slot)
+    copy_from(previous_stage_using_slot->a_shader_resource());
+  else
+  {
+    m_descriptor_count.randomize(rn);
+    IntervalExclusiveSorted<AShaderResourceIndex>::randomize(rn);
+  }
 }
 
 AShaderResourceIndex AShaderResource::get_sorted_begin() const

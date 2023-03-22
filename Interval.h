@@ -24,19 +24,17 @@ class Interval
 {
  public:
   template<ConceptIsBitSetIndex T = I>
-  constexpr Interval(I begin, I end) : m_distribution(begin(), end() - 1), m_begin(begin), m_end(end)
+  constexpr Interval(I begin, I end) : m_distribution(begin(), end() - 1), m_begin(begin), m_end(end), m_value(begin)
   {
     // The interval may not be empty.
     ASSERT(begin < end);
-    reset();
   }
 
   template<ConceptIsVectorIndex VECTORINDEX = I>
-  constexpr Interval(I begin, I end) : m_distribution(begin.get_value(), end.get_value() - 1), m_begin(begin), m_end(end)
+  constexpr Interval(I begin, I end) : m_distribution(begin.get_value(), end.get_value() - 1), m_begin(begin), m_end(end), m_value(begin)
   {
     // The interval may not be empty.
     ASSERT(begin < end);
-    reset();
   }
 
   void reset()
@@ -57,7 +55,7 @@ class Interval
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::debug, demangled_name() << "::randomize()");
+    DoutEntering(dc::debug, demangled_name() << "::randomize() [" << this << "]");
     if constexpr (std::is_same_v<I, utils::bitset::Index>)
     {
       utils::bitset::IndexPOD index{rn.generate(m_distribution)};

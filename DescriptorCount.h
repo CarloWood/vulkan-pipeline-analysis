@@ -34,7 +34,7 @@ class DescriptorCount
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::debug, "DescriptorCount::randomize()");
+    DoutEntering(dc::debug, "DescriptorCount::randomize() [" << this << "]");
     static std::array<int, 3> values = { -1, 1, 7 };
     m_count = values[rn.generate(s_distribution)];
   }

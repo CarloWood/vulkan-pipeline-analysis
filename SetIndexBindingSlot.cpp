@@ -31,6 +31,8 @@ bool SetIndexBindingSlot::next()
 
 void SetIndexBindingSlot::randomize(utils::RandomNumber& rn)
 {
+  if (m_slot_as_bit.any())
+    m_owner->shader_module()->mark_unused_slot(m_owner, m_slot_as_bit, !m_previous_stage);
   auto available_bits = m_owner->shader_module()->available_slots().unused_set_index_binding_slots();
   m_available_slots_iter = available_bits();
   std::size_t number_of_available_bits = available_bits.count();
@@ -43,7 +45,7 @@ void SetIndexBindingSlot::randomize(utils::RandomNumber& rn)
     --bit;
   }
   m_slot_as_bit = *m_available_slots_iter;
-  m_owner->shader_module()->mark_used_slot(m_owner, m_slot_as_bit);
+  m_previous_stage = m_owner->shader_module()->mark_used_slot(m_owner, m_slot_as_bit);
 }
 
 #ifdef CWDEBUG

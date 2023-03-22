@@ -16,12 +16,12 @@ struct Slot;
 } // namespace category
 using SlotIndex = utils::VectorIndex<category::Slot>;
 
-class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>& /*, PipelineLayout&*/>>
+class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>&, PipelineLayout&>>
 {                                                       // vk::GraphicsPipelineCreateInfo element(s).
  public:
   static constexpr SlotIndex number_of_slots{static_cast<size_t>(SetIndexBindingSlots::index_end())};
 
-  Pipeline() : Generated("Pipeline", std::forward_as_tuple(m_stages /*, m_layout*/)),
+  Pipeline() : Generated("Pipeline", std::forward_as_tuple(m_stages, m_layout)),
       m_stages{{ { this, stage0 }, { this, stage1 }, { this, stage2 } }}
   {
   }
@@ -35,6 +35,6 @@ class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>
 
  private:
   std::array<Declaration const*, number_of_slots.get_value()> m_slot_owner{};  // The Declaration that first used a given slot.
-  std::array<Stage, number_of_stages> m_stages;                                 // stageCount, pStages.
-//  PipelineLayout m_layout;                                                    // layout.
+  std::array<Stage, number_of_stages> m_stages;                                // stageCount, pStages.
+  PipelineLayout m_layout;                                                     // layout.
 };

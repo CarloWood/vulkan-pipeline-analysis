@@ -10,9 +10,9 @@ int main()
 
   Pipeline pipeline;
 
-#if 1
-  uint64_t count = 0;
   Debug(dc::debug.off());
+#if 0
+  uint64_t count = 0;
   do
   {
     ++count;

@@ -24,8 +24,7 @@ void Pipeline::release_slot(Declaration const* current_declaration, SetIndexBind
 void Pipeline::print_on(std::ostream& os) const
 {
   os << PRINT_TYPE("Pipeline") << '{';
-  os << "stages:" << m_stages ;//<<
-//      ",\n    layout:" << m_layout;
+  os << "stages:" << m_stages << ",\n    layout:" << m_layout;
   os << "\n    }";
 }
 #endif

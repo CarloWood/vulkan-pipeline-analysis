@@ -31,7 +31,7 @@ class ShaderStageFlags : public utils::BitSet<uint32_t>
 
   void randomize(utils::RandomNumber& rn)
   {
-    //DoutEntering(dc::debug, "ShaderStageFlags::randomize()");
+    DoutEntering(dc::debug, "ShaderStageFlags::randomize() [" << this << "]");
     m_bitmask = rn.generate(s_distribution);
   }
 
