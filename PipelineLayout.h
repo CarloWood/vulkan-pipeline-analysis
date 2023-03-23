@@ -37,7 +37,7 @@ class PipelineLayout : public Generated<std::tuple<std::vector<DescriptorSetLayo
 
   void randomize(utils::RandomNumber& rn)
   {
-    DoutEntering(dc::debug, "Declarations::randomize() [" << this << "]");
+    DoutEntering(dc::debug, "PipelineLayout::randomize() [" << this << "]");
     std::uniform_int_distribution<size_t> distribution(0, number_of_shader_resources - 1);
     size_t new_size = rn.generate(distribution);
     m_descriptor_set_layouts.clear();

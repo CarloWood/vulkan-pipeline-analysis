@@ -27,7 +27,9 @@ class SetIndexBindingSlots
 
   void allow_all()
   {
+    DoutEntering(dc::debug, "SetIndexBindingSlots::allow_all() [" << this << "]");
     m_used_set_index_binding_slots.reset(all_slots);
+    Dout(dc::debug, "m_used_set_index_binding_slots is now " << m_used_set_index_binding_slots);
   }
 
   // Accessor.

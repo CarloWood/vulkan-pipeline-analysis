@@ -32,6 +32,9 @@ class Declarations : public Generated<std::tuple<std::deque<Declaration>&>>
     return m_declarations;
   }
 
+  ShaderModule const* owning_shader_module() const { return m_owner; }
+  std::deque<Declaration> const& declaration_list() const { return m_declarations; }
+
  private:
   static std::uniform_int_distribution<size_t> s_distribution;
   ShaderModule* const m_owner;                  // The ShaderModule that these Declarations are used in (fixed).

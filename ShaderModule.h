@@ -34,24 +34,37 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
 
   void set_number_of_declarations(int number_of_declarations)
   {
+    DoutEntering(dc::debug, "ShaderModule::set_number_of_declarations(" << number_of_declarations << ") [" << this << "]");
     m_number_of_declarations = number_of_declarations;
   }
 
   void set_current_declaration_vector(std::deque<Declaration> const* declaration_vector)
   {
+    DoutEntering(dc::debug, "ShaderModule::set_current_declaration_vector(" << declaration_vector << ") [" << this << "]");
     m_declaration_vector = declaration_vector;
   }
 
   AShaderResourceIndex get_sorted_begin(int vi, AShaderResourceIndex begin) const
   {
+    DoutEntering(dc::debug, "ShaderModule::get_sorted_begin(vi:" << vi << ", begin:" << begin << ") [" << this << "]");
     ASSERT(vi >= 0);
-    return vi == 0 ? begin : (*m_declaration_vector)[vi - 1].a_shader_resource().get_value() + 1;
+    if (vi == 0)
+    {
+      Dout(dc::debug, "Returning " << begin << " because vi == 0.");
+      return begin;
+    }
+    AShaderResourceIndex result = (*m_declaration_vector)[vi - 1].a_shader_resource().get_value() + 1;
+    Dout(dc::debug, "The previous declaration is " << &(*m_declaration_vector)[vi - 1] << " with shader resource: " <<
+        (*m_declaration_vector)[vi - 1].a_shader_resource() << ": returning " << result);
+    return result;
   }
 
   AShaderResourceIndex get_sorted_end(int vi, AShaderResourceIndex end) const
   {
+    DoutEntering(dc::debug, "ShaderModule::get_sorted_end(vi:" << vi << ", end:" << end << ") [" << this << "]");
     AShaderResourceIndex result = end - (m_number_of_declarations - 1) + vi;
     ASSERT(result.get_value() <= 4 || m_number_of_declarations == 0);
+    Dout(dc::debug, "Returning end - (m_number_of_declarations - 1) + vi = " << result);
     return result;
   }
 
@@ -64,6 +77,9 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
   {
     return m_available_slots;
   }
+
+  // Accessor.
+  Declarations const& declarations() const { return m_declarations; }
 
  private:
   Pipeline* m_owner;                            // Pointer back to the pipeline.

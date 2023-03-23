@@ -31,6 +31,7 @@ void Declarations::randomize(utils::RandomNumber& rn)
   DoutEntering(dc::debug, "Declarations::randomize() [" << this << "]");
   m_owner->allow_all();
   size_t new_size = rn.generate(s_distribution);
+  Dout(dc::debug, "Going to generate " << new_size << " declarations.");
   std::deque<Declaration> new_declarations;
   m_owner->set_number_of_declarations(new_size);
   m_owner->set_current_declaration_vector(&new_declarations);

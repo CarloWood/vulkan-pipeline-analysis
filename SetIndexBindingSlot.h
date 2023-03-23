@@ -1,9 +1,15 @@
 #pragma once
 
 #include "SetIndexBindingSlots.h"
+#include <stdexcept>
 
 class ShaderModule;
 class Declaration;
+
+struct RanOutOfSlots : std::underflow_error
+{
+  RanOutOfSlots() : std::underflow_error("No more set_index.binding slots") { }
+};
 
 class SetIndexBindingSlot
 {
@@ -24,6 +30,13 @@ class SetIndexBindingSlot
 
   SetIndexBindingSlot(Declaration* owner, utils::RandomNumber& rn, int vi) : m_owner(owner), m_vi(vi), m_previous_stage(nullptr)
   {
+    DoutEntering(dc::debug, "SetIndexBindingSlot::SetIndexBindingSlot(" << owner << ", rn, " << vi << ") [" << this << "]");
+    init(rn);
+  }
+
+  void init(utils::RandomNumber& rn)
+  {
+    DoutEntering(dc::debug, "SetIndexBindingSlot::init(rn) [" << this << "]");
     m_slot_as_bit.reset();
     randomize(rn);
   }
@@ -54,6 +67,11 @@ class SetIndexBindingSlot
   void reset();
   bool next();
   void randomize(utils::RandomNumber& rn);
+
+  // Accessors.
+  Declaration const* owning_declaration() const { return m_owner; }
+  int get_vi() const { return m_vi; }
+  slot_as_bit_type slot_as_bit() const { ASSERT(m_slot_as_bit.is_single_bit()); return m_slot_as_bit; }
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;

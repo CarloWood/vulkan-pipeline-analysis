@@ -35,10 +35,7 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
     DoutEntering(dc::debug, "Declaration(" << owner << ", " << vi << ") [" << this << "]");
   }
 
-  Declaration(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
-    Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
-    m_magic(constructed_magic),
-    m_owner(owner), m_set_index_binding_slot(this, rn, vi), m_a_shader_resource(this, rn, vi) { }
+  Declaration(ShaderModule* owner, utils::RandomNumber& rn, int vi);
 
   Declaration(Declaration const*) = delete;
   Declaration(Declaration&& orig) :
@@ -66,7 +63,7 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
     return m_a_shader_resource;
   }
 
-  ShaderModule* shader_module() const
+  ShaderModule* owning_shader_module() const
   {
     ASSERT(m_magic == constructed_magic);
     return m_owner;
@@ -80,6 +77,9 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
     Dout(dc::finish, result);
     return result;
   }
+
+  // Accessors.
+  SetIndexBindingSlot const& set_index_binding_slot() const { return m_set_index_binding_slot; }
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;

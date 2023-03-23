@@ -48,12 +48,12 @@ void AShaderResource::randomize(utils::RandomNumber& rn)
 
 AShaderResourceIndex AShaderResource::get_sorted_begin() const
 {
-  return m_owner->shader_module()->get_sorted_begin(m_vi, s_shader_resources.ibegin());
+  return m_owner->owning_shader_module()->get_sorted_begin(m_vi, s_shader_resources.ibegin());
 }
 
 AShaderResourceIndex AShaderResource::get_sorted_end() const
 {
-  return m_owner->shader_module()->get_sorted_end(m_vi, s_shader_resources.iend());
+  return m_owner->owning_shader_module()->get_sorted_end(m_vi, s_shader_resources.iend());
 }
 
 #ifdef CWDEBUG
@@ -61,7 +61,9 @@ void AShaderResource::print_on(std::ostream& os) const
 {
   os << PRINT_TYPE("AShaderResource") << '{';
   os << "current_shader_resource:\"" << s_shader_resources[get_value()].name() << '"';
+#if !DISABLE_DESCRIPTOR_COUNT
   os << ", descriptor_count:" << m_descriptor_count;
+#endif
   os << "} (" << m_vi << ")";
 }
 #endif

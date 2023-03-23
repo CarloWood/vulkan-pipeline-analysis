@@ -33,6 +33,9 @@ class Stage : public Generated<std::tuple<ShaderModule&>>
   void print_on(std::ostream& os) const;
 #endif
 
+  // Accessor.
+  ShaderModule const& module() const { return m_module; }
+
  private:
   ShaderModule m_module;                // Handle to the compiled shader code for this stage.
 };

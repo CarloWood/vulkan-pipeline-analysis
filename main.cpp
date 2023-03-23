@@ -10,15 +10,16 @@ int main()
 
   Pipeline pipeline;
 
-  Debug(dc::debug.off());
-#if 0
+  //Debug(dc::debug.off());
   uint64_t count = 0;
+#if 0
   do
   {
     ++count;
 //    if (count == 305567)
 //      Debug(dc::debug.on());
     Dout(dc::notice, count << " : " << pipeline);
+    ASSERT(pipeline.is_sane());
 //    if (count == 305568)
 //      break;
   }
@@ -26,12 +27,22 @@ int main()
 
   Dout(dc::notice, "count = " << count);
 #else
-  utils::RandomNumber rn;
+  utils::RandomNumber rn(0x4);
 
   for (;;)
   {
-    pipeline.randomize(rn);
-    Dout(dc::notice, pipeline);
+    ++count;
+    try
+    {
+      pipeline.randomize(rn);
+    }
+    catch (std::exception const&)
+    {
+      Dout(dc::notice, "FAILURE for: " << pipeline);
+      return 1;
+    }
+    Dout(dc::notice, count << " : " << pipeline);
+    ASSERT(pipeline.is_sane());
   }
 #endif
 }

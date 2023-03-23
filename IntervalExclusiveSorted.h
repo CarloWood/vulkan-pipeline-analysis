@@ -71,20 +71,26 @@ class IntervalExclusiveSorted
     m_end = get_sorted_end();
     ASSERT(m_begin < m_end);
     if (m_begin == m_end - 1)
+    {
+      Dout(dc::debug, "Setting m_value to " << m_begin << " because that is the only possible value.");
       m_value = m_begin;
+    }
     else
     {
       if constexpr (std::is_same_v<I, utils::bitset::Index>)
       {
+        Dout(dc::debug|continued_cf, "Generating a random m_value in range [" << (int)m_begin() << ", " << (int)m_end() << "> ... ");
         std::uniform_int_distribution<int8_t> distribution(m_begin(), m_end() - 1);
         utils::bitset::IndexPOD index{rn.generate(distribution)};
         m_value = I{index};
       }
       else
       {
+        Dout(dc::debug|continued_cf, "Generating a random m_value in range [" << (int)m_begin.get_value() << ", " << (int)m_end.get_value() << "> ... ");
         std::uniform_int_distribution<int8_t> distribution(m_begin.get_value(), m_end.get_value() - 1);
         m_value = I{static_cast<size_t>(rn.generate(distribution))};
       }
+      Dout(dc::finish, m_value);
     }
   }
 

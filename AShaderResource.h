@@ -31,11 +31,37 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
     m_owner(owner), m_vi(vi) { reset(); }
 
   AShaderResource(Declaration const* owner, utils::RandomNumber& rn, int vi) :
-    m_owner(owner), m_vi(vi) { randomize(rn); }
+    m_owner(owner), m_vi(vi)
+  {
+    DoutEntering(dc::debug, "AShaderResource::AShaderResource(" << owner << ", rn, " << vi << ") [" << this << "]");
+    randomize(rn);
+  }
 
   void reset();
   bool next();
   void randomize(utils::RandomNumber& rn);
+
+  bool out_of_range(bool& too_large) const
+  {
+    DoutEntering(dc::debug|continued_cf, "AShaderResource::out_of_range() [" << this << "] = ");
+    too_large = false;
+
+    if (get_sorted_begin() > m_value)
+    {
+      Dout(dc::finish, "true (because m_value (" << m_value << ") < get_sorted_begin() (" << get_sorted_begin() << ")).");
+      return true;
+    }
+
+    if (m_value >= get_sorted_end())
+    {
+      Dout(dc::finish, "true (because m_value (" << m_value << ") >= get_sorted_end() (" << get_sorted_end() << ")).");
+      too_large = true;
+      return true;
+    }
+
+    Dout(dc::finish, "false.");
+    return false;
+  }
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;
@@ -55,15 +81,15 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
     DoutEntering(dc::debug, "AShaderResource::copy_from(" << &other << ") [" << this << "]");
 
     m_value = other.m_value;
-    m_vi = other.m_vi;
     m_descriptor_count = other.m_descriptor_count;
-    Dout(dc::debug, "m_vi = " << m_vi << "; m_descriptor_count = " << m_descriptor_count);
+    Dout(dc::debug, "m_value = " << m_value << "; m_descriptor_count = " << m_descriptor_count << "; (m_vi = " << m_vi << ")");
   }
 
-  int get_vi() const override
-  {
-    return m_vi;
-  }
+ public:
+  // Accessors.
+  Declaration const* owning_declaration() const { return m_owner; }
+  int get_vi() const override { return m_vi; }
+  DescriptorCount const& descriptor_count() const { return m_descriptor_count; }
 
  private:
   static utils::Array<ShaderResource, number_of_shader_resources, AShaderResourceIndex> const s_shader_resources;
