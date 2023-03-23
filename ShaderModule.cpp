@@ -19,6 +19,11 @@ void ShaderModule::mark_unused_slot(Declaration const* current_declaration, SetI
   m_available_slots.mark_unused(slot);
 }
 
+void ShaderModule::update_layout(Declaration const& declaration)
+{
+  m_owner->update_layout(declaration);
+}
+
 #ifdef CWDEBUG
 void ShaderModule::print_on(std::ostream& os) const
 {

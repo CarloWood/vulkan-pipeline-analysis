@@ -10,11 +10,15 @@ using utils::has_print_on::operator<<;
 class DescriptorSetLayout : public Generated<std::tuple<std::vector<DescriptorSetLayoutBinding>&>>
 {
  public:
-  DescriptorSetLayout() : Generated("DescriptorSetLayout", std::forward_as_tuple(m_descriptor_set_layout_bindings)) { }
+  DescriptorSetLayout() : Generated("DescriptorSetLayout", std::forward_as_tuple(m_descriptor_set_layout_bindings)),
+    m_number_of_descriptor_set_layout_bindings(0),
+    m_current_descriptor_set_layout_binding_vector(&m_descriptor_set_layout_bindings) { }
 
   DescriptorSetLayout(DescriptorSetLayout const&) = delete;
   DescriptorSetLayout(DescriptorSetLayout&& orig) :
     Generated("DescriptorSetLayout", std::forward_as_tuple(m_descriptor_set_layout_bindings)),
+    m_number_of_descriptor_set_layout_bindings(orig.m_number_of_descriptor_set_layout_bindings),
+    m_current_descriptor_set_layout_binding_vector(orig.m_current_descriptor_set_layout_binding_vector),
     m_descriptor_set_layout_bindings(std::move(orig.m_descriptor_set_layout_bindings)) { }
   DescriptorSetLayout& operator=(DescriptorSetLayout const&) = delete;
   DescriptorSetLayout& operator=(DescriptorSetLayout&&) = delete;
@@ -23,6 +27,8 @@ class DescriptorSetLayout : public Generated<std::tuple<std::vector<DescriptorSe
   {
     DoutEntering(dc::debug, "DescriptorSetLayout::reset() [" << this << "]");
     m_descriptor_set_layout_bindings.clear();
+    m_current_descriptor_set_layout_binding_vector = &m_descriptor_set_layout_bindings;
+    m_number_of_descriptor_set_layout_bindings = 0;
   }
 
   bool next()
@@ -41,7 +47,7 @@ class DescriptorSetLayout : public Generated<std::tuple<std::vector<DescriptorSe
         m_number_of_descriptor_set_layout_bindings = new_size;
         m_current_descriptor_set_layout_binding_vector = &new_descriptor_set_layout_bindings;
         for (int i = 0; i < new_size; ++i)
-          new_descriptor_set_layout_bindings.emplace_back(this, i);
+          new_descriptor_set_layout_bindings.emplace_back();
         m_descriptor_set_layout_bindings = std::move(new_descriptor_set_layout_bindings);
         m_current_descriptor_set_layout_binding_vector = &m_descriptor_set_layout_bindings;
       }
@@ -60,13 +66,33 @@ class DescriptorSetLayout : public Generated<std::tuple<std::vector<DescriptorSe
     m_number_of_descriptor_set_layout_bindings = new_size;
     m_current_descriptor_set_layout_binding_vector = &new_descriptor_set_layout_bindings;
     for (int i = 0; i < new_size; ++i)
-      new_descriptor_set_layout_bindings.emplace_back(this, rn, i);
+      new_descriptor_set_layout_bindings.emplace_back(rn);
     m_descriptor_set_layout_bindings = std::move(new_descriptor_set_layout_bindings);
     m_current_descriptor_set_layout_binding_vector = &m_descriptor_set_layout_bindings;
   }
 
   BindingIndex get_sorted_begin(int vi, BindingIndex begin) const;
   BindingIndex get_sorted_end(int vi, BindingIndex end) const;
+
+  std::vector<DescriptorSetLayoutBinding>& descriptor_set_layout_bindings()
+  {
+    return m_descriptor_set_layout_bindings;
+  }
+
+  void increment_number_of_descriptor_set_layout_bindings()
+  {
+    ++m_number_of_descriptor_set_layout_bindings;
+  }
+
+  // Accessors.
+  std::size_t number_of_descriptor_set_layout_bindings() const { return m_number_of_descriptor_set_layout_bindings; }
+  std::vector<DescriptorSetLayoutBinding> const& descriptor_set_layout_bindings() const
+  {
+    // Don't access this when it isn't current.
+    ASSERT(m_current_descriptor_set_layout_binding_vector == &m_descriptor_set_layout_bindings);
+    ASSERT(m_descriptor_set_layout_bindings.size() == m_number_of_descriptor_set_layout_bindings);
+    return m_descriptor_set_layout_bindings;
+  }
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;

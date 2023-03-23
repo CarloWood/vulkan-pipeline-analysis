@@ -21,6 +21,7 @@ Declaration::Declaration(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
     m_a_shader_resource.randomize(rn);
   }
   m_owner->mark_unused_slot(nullptr, rejected_slots, false);
+  m_owner->update_layout(*this);
 }
 
 #ifdef CWDEBUG

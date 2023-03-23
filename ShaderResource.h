@@ -15,8 +15,9 @@ class ShaderResource
   void print_on(std::ostream& os) const;
 #endif
 
-  // Accessor.
+  // Accessors.
   std::string const& name() const { return m_name; }
+  DescriptorType const& type() const { return m_type; }
 
  private:
   std::string const m_name;             // The (debug) name of this shader resource (fixed).

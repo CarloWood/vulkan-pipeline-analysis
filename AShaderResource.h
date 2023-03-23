@@ -90,6 +90,7 @@ class AShaderResource : public IntervalExclusiveSorted<AShaderResourceIndex>
   Declaration const* owning_declaration() const { return m_owner; }
   int get_vi() const override { return m_vi; }
   DescriptorCount const& descriptor_count() const { return m_descriptor_count; }
+  static ShaderResource const& shader_resource(AShaderResourceIndex shader_resource_index) { return s_shader_resources[shader_resource_index]; }
 
  private:
   static utils::Array<ShaderResource, number_of_shader_resources, AShaderResourceIndex> const s_shader_resources;

@@ -10,7 +10,7 @@ int main()
 
   Pipeline pipeline;
 
-  //Debug(dc::debug.off());
+  Debug(dc::debug.off());
   uint64_t count = 0;
 #if 0
   do

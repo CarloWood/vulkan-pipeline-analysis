@@ -5,6 +5,7 @@
 #include "DescriptorType.h"
 #include "DescriptorCount.h"
 #include "Generated.h"
+#include "SetIndex.h"
 #include "utils/has_print_on.h"
 #include <tuple>
 
@@ -13,18 +14,32 @@ using utils::has_print_on::operator<<;
 class DescriptorSetLayoutBinding : public Generated<std::tuple<Binding&, DescriptorType&, DescriptorCount&, ShaderStageFlags&>>
 {
  public:
-  DescriptorSetLayoutBinding(DescriptorSetLayout const* owner, int vi) :
-    Generated("DescriptorSetLayoutBinding", std::forward_as_tuple(m_binding, m_descriptor_type, m_descriptor_count, m_stage_flags)),
-    m_binding(owner, vi)
+  DescriptorSetLayoutBinding() :
+    Generated("DescriptorSetLayoutBinding", std::forward_as_tuple(m_binding, m_descriptor_type, m_descriptor_count, m_stage_flags))
     { }
 
-  DescriptorSetLayoutBinding(DescriptorSetLayout const* owner, utils::RandomNumber& rn, int vi) :
-    DescriptorSetLayoutBinding(owner, vi) { randomize(rn); }
-
-  Binding const& binding() const
+  DescriptorSetLayoutBinding(utils::RandomNumber& rn) :
+    DescriptorSetLayoutBinding()
   {
-    return m_binding;
+    randomize(rn);
   }
+
+  DescriptorSetLayoutBinding(BindingIndex binding_index, DescriptorType const& descriptor_type,
+      DescriptorCount const& descriptor_count, ShaderStageFlagBits shader_stage_flag_bit);
+
+  void also_used_in(ShaderStageFlagBits shader_stage_flag_bit)
+  {
+    DoutEntering(dc::debug, "DescriptorSetLayoutBinding::also_used_in(" << shader_stage_flag_bit << ") [" << this << "]");
+    Dout(dc::debug|continued_cf, "Changing m_stage_flags @" << &m_stage_flags << " from " << m_stage_flags << " to ");
+    m_stage_flags.set(shader_stage_flag_bit);
+    Dout(dc::finish, m_stage_flags);
+  }
+
+  // Accessors.
+  Binding const& binding() const { return m_binding; }
+  DescriptorType const& descriptor_type() const { return m_descriptor_type; }
+  DescriptorCount const& descriptor_count() const { return m_descriptor_count; }
+  ShaderStageFlags const& stage_flags() const { return m_stage_flags; }
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;

@@ -64,6 +64,11 @@ class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>
     }
   }
 
+  void update_layout(Declaration const& declaration)
+  {
+    m_layout.update_layout(declaration);
+  }
+
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;
 #endif

@@ -14,9 +14,16 @@ static constexpr utils::bitset::IndexPOD binding_end{3};
 class Binding : public IntervalExclusiveSorted<BindingIndex>
 {
  public:
+  Binding() : m_owner(nullptr), m_vi(-1) { }
+
   Binding(DescriptorSetLayout const* owner, int vi) : m_owner(owner), m_vi(vi)
   {
     reset();
+  }
+
+  void set_index(BindingIndex binding_index)
+  {
+    m_value = binding_index;
   }
 
  private:

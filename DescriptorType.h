@@ -20,6 +20,11 @@ class DescriptorType : public Interval<DescriptorTypeIndex>
   DescriptorType() : Interval<DescriptorTypeIndex>(descriptor_type_begin, descriptor_type_end) { }
   DescriptorType(DescriptorTypeIndex index) : Interval<DescriptorTypeIndex>(index, index + 1) { }
 
+  friend bool operator==(DescriptorType const& lhs, DescriptorType const& rhs)
+  {
+    return lhs.m_value == rhs.m_value;
+  }
+
  private:
   char const* demangled_name() const override
   {

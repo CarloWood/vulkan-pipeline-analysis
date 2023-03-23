@@ -24,6 +24,7 @@ bool Pipeline::is_sane() const
 {
   std::array<SetIndexBindingSlot::slot_as_bit_type, number_of_stages> slots;
   int stage_index = 0;
+  std::deque<DescriptorSetLayout> const& descriptor_set_layouts = m_layout.descriptor_set_layouts();
   for (Stage const& stage : m_stages)
   {
     ShaderModule const& shader_module = stage.module();
@@ -85,6 +86,39 @@ bool Pipeline::is_sane() const
         AShaderResourceIndex prev_shader_resource_index = prev_a_shader_resource.get_value();
         ASSERT(shader_resource_index == prev_shader_resource_index);
       }
+
+      // Check the layout.
+      std::pair<SetIndexIndex, BindingIndex> set_index_binding = set_index_binding_slot.get_set_index_binding();
+      SetIndexIndex set_index(utils::bitset::index_begin);
+      utils::bitset::Index stage_index2({static_cast<int8_t>(stage_index)});
+      bool found_set_index = false;
+      bool found_descriptor_set_layout_binding = false;
+      for (DescriptorSetLayout const& descriptor_set_layout : descriptor_set_layouts)
+      {
+        if (set_index == set_index_binding.first)
+        {
+          found_set_index = true;
+          std::vector<DescriptorSetLayoutBinding> const& descriptor_set_layout_bindings = descriptor_set_layout.descriptor_set_layout_bindings();
+          for (DescriptorSetLayoutBinding const& descriptor_set_layout_binding : descriptor_set_layout_bindings)
+          {
+            if (descriptor_set_layout_binding.binding().get_value() == set_index_binding.second)
+            {
+              ASSERT(!found_descriptor_set_layout_binding);
+              found_descriptor_set_layout_binding = true;
+              DescriptorType const& descriptor_type = descriptor_set_layout_binding.descriptor_type();
+              DescriptorCount const& descriptor_count = descriptor_set_layout_binding.descriptor_count();
+              ShaderStageFlags const& stage_flags = descriptor_set_layout_binding.stage_flags();
+
+              ASSERT(stage_flags.test(stage_index2));
+              ASSERT(descriptor_type == AShaderResource::shader_resource(a_shader_resource.get_value()).type());
+              ASSERT(descriptor_count == a_shader_resource.descriptor_count());
+            }
+          }
+        }
+        ++set_index;
+      }
+      if (!found_descriptor_set_layout_binding)
+        DoutFatal(dc::fatal, "Could not find " << set_index_binding_slot << " (used in stage " << stage_index << ") in the layout.");
 
       ++vi;
     }

@@ -77,6 +77,11 @@ class Interval
     return m_value;
   }
 
+  void set_value(I value)
+  {
+    m_value = value;
+  }
+
   virtual char const* demangled_name() const = 0;
 
  private:
