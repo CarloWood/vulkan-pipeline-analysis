@@ -5,6 +5,8 @@
 #include <cstdint>
 #include <array>
 #include <vector>
+#include <deque>
+#include <list>
 #include <tuple>
 
 template<typename T>
