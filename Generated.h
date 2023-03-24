@@ -19,6 +19,9 @@ static constexpr bool is_container_v<std::vector<T>> = true;
 template<typename T>
 static constexpr bool is_container_v<std::deque<T>> = true;
 
+template<typename T>
+static constexpr bool is_container_v<std::list<T>> = true;
+
 template<typename Tuple>
 class Generated;
 

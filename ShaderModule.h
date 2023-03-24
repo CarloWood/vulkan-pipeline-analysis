@@ -78,7 +78,8 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
     return m_available_slots;
   }
 
-  void update_layout(Declaration const& declaration);
+  DescriptorSetLayout* update_layout_add(Declaration const& declaration);
+  void update_layout_remove(Declaration const& declaration);
 
   // Accessor.
   Declarations const& declarations() const { return m_declarations; }

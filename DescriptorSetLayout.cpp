@@ -1,20 +1,45 @@
 #include "sys.h"
 #include "DescriptorSetLayout.h"
+#include "Declaration.h"
+#include "ShaderModule.h"
 #include "debug.h"
+#include <algorithm>
 
-BindingIndex DescriptorSetLayout::get_sorted_begin(int vi, BindingIndex begin) const
+void DescriptorSetLayout::update_layout(BindingIndex prev_binding_index, Declaration const& declaration)
 {
-  //DoutEntering(dc::debug|continued_cf, "DescriptorSetLayout::get_sorted_begin(" << vi << ", " << begin << ") --> ");
-  ASSERT(vi >= binding_begin.m_index);
-  BindingIndex result = vi == binding_begin.m_index ? begin : (*m_current_descriptor_set_layout_binding_vector)[vi - 1].binding().get_value() + 1;
-  return result;
-}
+  DoutEntering(dc::debug, "DescriptorSetLayout::update_layout(" << prev_binding_index << ", " << declaration << ") [" << this << "]");
 
-BindingIndex DescriptorSetLayout::get_sorted_end(int vi, BindingIndex end) const
-{
-  //DoutEntering(dc::debug|continued_cf, "DescriptorSetLayout::get_sorted_end(" << vi << ", " << end << ") --> ");
-  BindingIndex result = end - (m_number_of_descriptor_set_layout_bindings - 1) + vi;
-  return result;
+  auto descriptor_set_layout_binding = std::find_if(m_descriptor_set_layout_bindings.begin(), m_descriptor_set_layout_bindings.end(),
+        [&](DescriptorSetLayoutBinding const& descriptor_set_layout_binding)
+        {
+          return descriptor_set_layout_binding.binding().get_value() == prev_binding_index;
+        });
+
+  ASSERT(descriptor_set_layout_binding != m_descriptor_set_layout_bindings.end());
+
+  std::pair<SetIndexIndex, BindingIndex> set_index_binding = declaration.set_index_binding_slot().get_set_index_binding();
+  SetIndexIndex set_index_index = set_index_binding.first;
+  BindingIndex new_binding_index = set_index_binding.second;
+
+  AShaderResource const& a_shader_resource = declaration.a_shader_resource();
+  DescriptorType const& descriptor_type = AShaderResource::shader_resource(a_shader_resource.get_value()).type();
+  DescriptorCount const& descriptor_count = a_shader_resource.descriptor_count();
+
+  if (prev_binding_index == new_binding_index)
+    descriptor_set_layout_binding->update(descriptor_type, descriptor_count);
+  else
+  {
+    auto new_descriptor_set_layout_binding = std::find_if(m_descriptor_set_layout_bindings.begin(), m_descriptor_set_layout_bindings.end(),
+          [&](DescriptorSetLayoutBinding const& descriptor_set_layout_binding)
+          {
+            return descriptor_set_layout_binding.binding().get_value() == new_binding_index;
+          });
+
+    ASSERT(new_descriptor_set_layout_binding == m_descriptor_set_layout_bindings.end());
+
+    m_descriptor_set_layout_bindings.erase(descriptor_set_layout_binding);
+    m_descriptor_set_layout_bindings.emplace_back(new_binding_index, descriptor_type, descriptor_count, declaration.shader_module()->stage());
+  }
 }
 
 #ifdef CWDEBUG

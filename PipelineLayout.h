@@ -21,6 +21,7 @@ class PipelineLayout : public Generated<std::tuple<std::deque<DescriptorSetLayou
 
   bool next()
   {
+#if 0
     DoutEntering(dc::debug|continued_cf, "PipelineLayout::next() [" << this << "] = ");
     bool result = true;
     if (!Generated::next())
@@ -33,6 +34,8 @@ class PipelineLayout : public Generated<std::tuple<std::deque<DescriptorSetLayou
     }
     Dout(dc::finish, std::boolalpha << result);
     return result;
+#endif
+    return false;
   }
 
   void randomize(utils::RandomNumber& rn)
@@ -47,7 +50,8 @@ class PipelineLayout : public Generated<std::tuple<std::deque<DescriptorSetLayou
 #endif
   }
 
-  void update_layout(Declaration const& declaration);
+  DescriptorSetLayout* update_layout_add(Declaration const& declaration);
+  void update_layout_remove(Declaration const& declaration);
 
   // Accessor.
   std::deque<DescriptorSetLayout> const& descriptor_set_layouts() const

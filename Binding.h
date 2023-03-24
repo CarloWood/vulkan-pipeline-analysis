@@ -14,32 +14,18 @@ static constexpr utils::bitset::IndexPOD binding_end{3};
 class Binding : public IntervalExclusiveSorted<BindingIndex>
 {
  public:
-  Binding() : m_owner(nullptr), m_vi(-1) { }
-
-  Binding(DescriptorSetLayout const* owner, int vi) : m_owner(owner), m_vi(vi)
-  {
-    reset();
-  }
-
   void set_index(BindingIndex binding_index)
   {
     m_value = binding_index;
   }
 
  private:
-  BindingIndex get_sorted_begin() const override;
-  BindingIndex get_sorted_end() const override;
+  BindingIndex get_sorted_begin() const override { ASSERT(false); return binding_begin; }
+  BindingIndex get_sorted_end() const override { ASSERT(false); return binding_end; }
+  int get_vi() const override { ASSERT(false); return -1; }
 
   char const* demangled_name() const override
   {
     return "Binding";
   }
-
-  int get_vi() const override
-  {
-    return m_vi;
-  }
-
-  DescriptorSetLayout const* m_owner;
-  int const m_vi;
 };

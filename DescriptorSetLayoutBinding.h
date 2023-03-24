@@ -35,6 +35,13 @@ class DescriptorSetLayoutBinding : public Generated<std::tuple<Binding&, Descrip
     Dout(dc::finish, m_stage_flags);
   }
 
+  void update(DescriptorType const& descriptor_type, DescriptorCount const& descriptor_count)
+  {
+    DoutEntering(dc::debug, "DescriptorSetLayoutBinding::update(" << descriptor_type << ", " << descriptor_count << ")");
+    m_descriptor_type.set_value(descriptor_type.get_value());
+    m_descriptor_count = descriptor_count;
+  }
+
   // Accessors.
   Binding const& binding() const { return m_binding; }
   DescriptorType const& descriptor_type() const { return m_descriptor_type; }

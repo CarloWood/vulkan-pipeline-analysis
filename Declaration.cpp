@@ -1,6 +1,32 @@
 #include "sys.h"
 #include "Declaration.h"
 #include "ShaderModule.h"
+#include "DescriptorSetLayout.h"
+
+Declaration::Declaration(ShaderModule* owner, int vi) :
+  Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
+  m_magic(constructed_magic),
+  m_owner(owner), m_set_index_binding_slot(this, vi), m_a_shader_resource(this, vi)
+{
+  DoutEntering(dc::debug, "Declaration(" << owner << ", " << vi << ") [" << this << "]");
+  m_descriptor_set_layout = m_owner->update_layout_add(*this);
+}
+
+Declaration::~Declaration()
+{
+  DoutEntering(dc::debug, "~Declaration() [" << this << "]");
+  ASSERT(m_magic == constructed_magic || m_magic == moved_magic);
+  m_owner->update_layout_remove(*this);
+  m_magic = destructed_magic;
+}
+
+bool Declaration::next()
+{
+  BindingIndex prev_binding_index = m_set_index_binding_slot.get_set_index_binding().second;
+  bool result = Generated<std::tuple<SetIndexBindingSlot&, AShaderResource&>>::next();
+  m_descriptor_set_layout->update_layout(prev_binding_index, *this);
+  return result;
+}
 
 Declaration::Declaration(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
   Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
@@ -21,7 +47,7 @@ Declaration::Declaration(ShaderModule* owner, utils::RandomNumber& rn, int vi) :
     m_a_shader_resource.randomize(rn);
   }
   m_owner->mark_unused_slot(nullptr, rejected_slots, false);
-  m_owner->update_layout(*this);
+  m_owner->update_layout_add(*this);
 }
 
 #ifdef CWDEBUG

@@ -5,9 +5,14 @@
 #include "debug.h"
 #include <algorithm>
 
-void PipelineLayout::update_layout(Declaration const& declaration)
+void PipelineLayout::update_layout_remove(Declaration const& declaration)
 {
-  DoutEntering(dc::debug, "PipelineLayout::update_layout(" << declaration << ") [" << this << "]");
+  DoutEntering(dc::debug, "PipelineLayout::update_layout_remove(" << declaration << ") [" << this << "]");
+}
+
+DescriptorSetLayout* PipelineLayout::update_layout_add(Declaration const& declaration)
+{
+  DoutEntering(dc::debug, "PipelineLayout::update_layout_add(" << declaration << ") [" << this << "]");
 
   SetIndexBindingSlot const& set_index_binding_slot = declaration.set_index_binding_slot();
   std::pair<SetIndexIndex, BindingIndex> set_index_binding = set_index_binding_slot.get_set_index_binding();
@@ -16,7 +21,7 @@ void PipelineLayout::update_layout(Declaration const& declaration)
   if (m_descriptor_set_layouts.size() <= set_index)
     m_descriptor_set_layouts.resize(set_index + 1);
 
-  std::vector<DescriptorSetLayoutBinding>& descriptor_set_layout_bindings =
+  std::list<DescriptorSetLayoutBinding>& descriptor_set_layout_bindings =
       m_descriptor_set_layouts[set_index].descriptor_set_layout_bindings();
 
   auto descriptor_set_layout_binding = std::find_if(descriptor_set_layout_bindings.begin(), descriptor_set_layout_bindings.end(),
@@ -39,6 +44,8 @@ void PipelineLayout::update_layout(Declaration const& declaration)
         a_shader_resource.descriptor_count(), shader_module->stage());
     m_descriptor_set_layouts[set_index].increment_number_of_descriptor_set_layout_bindings();
   }
+
+  return &m_descriptor_set_layouts[set_index];
 }
 
 #ifdef CWDEBUG

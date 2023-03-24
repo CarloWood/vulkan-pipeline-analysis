@@ -98,7 +98,7 @@ bool Pipeline::is_sane() const
         if (set_index == set_index_binding.first)
         {
           found_set_index = true;
-          std::vector<DescriptorSetLayoutBinding> const& descriptor_set_layout_bindings = descriptor_set_layout.descriptor_set_layout_bindings();
+          std::list<DescriptorSetLayoutBinding> const& descriptor_set_layout_bindings = descriptor_set_layout.descriptor_set_layout_bindings();
           for (DescriptorSetLayoutBinding const& descriptor_set_layout_binding : descriptor_set_layout_bindings)
           {
             if (descriptor_set_layout_binding.binding().get_value() == set_index_binding.second)
@@ -133,9 +133,7 @@ void Pipeline::print_on(std::ostream& os) const
 {
   os << PRINT_TYPE("Pipeline") << '{';
   os << "stages:" << m_stages;
-#if !DISABLE_LAYOUT
   os << ",\n    layout:" << m_layout;
-#endif
   os << "\n    }";
 }
 #endif
