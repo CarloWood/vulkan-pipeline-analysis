@@ -5,12 +5,27 @@
 #include "debug.h"
 #include <algorithm>
 
-void PipelineLayout::update_layout_remove(Declaration const& declaration)
+void PipelineLayout::update_layout_remove(std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot)
 {
-  DoutEntering(dc::debug, "PipelineLayout::update_layout_remove(" << declaration << ") [" << this << "]");
+  DoutEntering(dc::debug, "PipelineLayout::update_layout_remove(" << prev_set_index_binding_slot << ") [" << this << "]");
+
+  size_t prev_set_index = prev_set_index_binding_slot.first();
+  ASSERT(m_descriptor_set_layouts.size() > prev_set_index);
+
+  std::list<DescriptorSetLayoutBinding>& descriptor_set_layout_bindings =
+      m_descriptor_set_layouts[prev_set_index].descriptor_set_layout_bindings();
+
+  auto descriptor_set_layout_binding = std::find_if(descriptor_set_layout_bindings.begin(), descriptor_set_layout_bindings.end(),
+        [&](DescriptorSetLayoutBinding const& descriptor_set_layout_binding)
+        {
+          return descriptor_set_layout_binding.binding().get_value() == prev_set_index_binding_slot.second;
+        });
+
+  ASSERT(descriptor_set_layout_binding != descriptor_set_layout_bindings.end());
+  descriptor_set_layout_bindings.erase(descriptor_set_layout_binding);
 }
 
-DescriptorSetLayout* PipelineLayout::update_layout_add(Declaration const& declaration)
+void PipelineLayout::update_layout_add(Declaration const& declaration)
 {
   DoutEntering(dc::debug, "PipelineLayout::update_layout_add(" << declaration << ") [" << this << "]");
 
@@ -42,10 +57,21 @@ DescriptorSetLayout* PipelineLayout::update_layout_add(Declaration const& declar
     descriptor_set_layout_bindings.emplace_back(
         set_index_binding.second, AShaderResource::shader_resource(a_shader_resource.get_value()).type(),
         a_shader_resource.descriptor_count(), shader_module->stage());
-    m_descriptor_set_layouts[set_index].increment_number_of_descriptor_set_layout_bindings();
   }
+}
 
-  return &m_descriptor_set_layouts[set_index];
+void PipelineLayout::update_layout(std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot, Declaration const& declaration)
+{
+  std::pair<SetIndexIndex, BindingIndex> set_index_binding = declaration.set_index_binding_slot().get_set_index_binding();
+  SetIndexIndex set_index_index = set_index_binding.first;
+
+  if (set_index_index == prev_set_index_binding_slot.first)
+    m_descriptor_set_layouts[set_index_index()].update_layout(prev_set_index_binding_slot.second, declaration);
+  else
+  {
+    m_descriptor_set_layouts[prev_set_index_binding_slot.first()].remove_layout(prev_set_index_binding_slot.second);
+    update_layout_add(declaration);
+  }
 }
 
 #ifdef CWDEBUG

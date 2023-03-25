@@ -50,8 +50,10 @@ class PipelineLayout : public Generated<std::tuple<std::deque<DescriptorSetLayou
 #endif
   }
 
-  DescriptorSetLayout* update_layout_add(Declaration const& declaration);
-  void update_layout_remove(Declaration const& declaration);
+  void update_layout_remove(std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot);
+  void update_layout_add(Declaration const& declaration);
+
+  void update_layout(std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot, Declaration const& declaration);
 
   // Accessor.
   std::deque<DescriptorSetLayout> const& descriptor_set_layouts() const

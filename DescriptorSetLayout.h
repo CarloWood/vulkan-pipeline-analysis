@@ -11,15 +11,19 @@ class DescriptorSetLayout : public Generated<std::tuple<std::list<DescriptorSetL
 {
  public:
   DescriptorSetLayout() : Generated("DescriptorSetLayout", std::forward_as_tuple(m_descriptor_set_layout_bindings)),
-    m_number_of_descriptor_set_layout_bindings(0),
-    m_current_descriptor_set_layout_binding_list(&m_descriptor_set_layout_bindings) { }
+    m_current_descriptor_set_layout_binding_list(&m_descriptor_set_layout_bindings)
+  {
+    DoutEntering(dc::debug, "DescriptorSetLayout::DescriptorSetLayout() [" << this << "]");
+  }
 
   DescriptorSetLayout(DescriptorSetLayout const&) = delete;
   DescriptorSetLayout(DescriptorSetLayout&& orig) :
     Generated("DescriptorSetLayout", std::forward_as_tuple(m_descriptor_set_layout_bindings)),
-    m_number_of_descriptor_set_layout_bindings(orig.m_number_of_descriptor_set_layout_bindings),
     m_current_descriptor_set_layout_binding_list(orig.m_current_descriptor_set_layout_binding_list),
-    m_descriptor_set_layout_bindings(std::move(orig.m_descriptor_set_layout_bindings)) { }
+    m_descriptor_set_layout_bindings(std::move(orig.m_descriptor_set_layout_bindings))
+  {
+    DoutEntering(dc::debug, "DescriptorSetLayout::DescriptorSetLayout(DescriptorSetLayout&&) [" << this << "]");
+  }
   DescriptorSetLayout& operator=(DescriptorSetLayout const&) = delete;
   DescriptorSetLayout& operator=(DescriptorSetLayout&&) = delete;
 
@@ -28,7 +32,6 @@ class DescriptorSetLayout : public Generated<std::tuple<std::list<DescriptorSetL
     DoutEntering(dc::debug, "DescriptorSetLayout::reset() [" << this << "]");
     m_descriptor_set_layout_bindings.clear();
     m_current_descriptor_set_layout_binding_list = &m_descriptor_set_layout_bindings;
-    m_number_of_descriptor_set_layout_bindings = 0;
   }
 
   bool next()
@@ -43,7 +46,6 @@ class DescriptorSetLayout : public Generated<std::tuple<std::list<DescriptorSetL
       else
       {
         std::list<DescriptorSetLayoutBinding> new_descriptor_set_layout_bindings;
-        m_number_of_descriptor_set_layout_bindings = new_size;
         m_current_descriptor_set_layout_binding_list = &new_descriptor_set_layout_bindings;
         for (int i = 0; i < new_size; ++i)
           new_descriptor_set_layout_bindings.emplace_back();
@@ -61,7 +63,6 @@ class DescriptorSetLayout : public Generated<std::tuple<std::list<DescriptorSetL
     std::uniform_int_distribution<size_t> distribution(0, number_of_shader_resources - 1);
     size_t new_size = rn.generate(distribution);
     std::list<DescriptorSetLayoutBinding> new_descriptor_set_layout_bindings;
-    m_number_of_descriptor_set_layout_bindings = new_size;
     m_current_descriptor_set_layout_binding_list = &new_descriptor_set_layout_bindings;
     for (int i = 0; i < new_size; ++i)
       new_descriptor_set_layout_bindings.emplace_back(rn);
@@ -74,20 +75,14 @@ class DescriptorSetLayout : public Generated<std::tuple<std::list<DescriptorSetL
     return m_descriptor_set_layout_bindings;
   }
 
-  void increment_number_of_descriptor_set_layout_bindings()
-  {
-    ++m_number_of_descriptor_set_layout_bindings;
-  }
-
+  void remove_layout(BindingIndex prev_binding_index);
   void update_layout(BindingIndex prev_binding_index, Declaration const& declaration);
 
   // Accessors.
-  std::size_t number_of_descriptor_set_layout_bindings() const { return m_number_of_descriptor_set_layout_bindings; }
   std::list<DescriptorSetLayoutBinding> const& descriptor_set_layout_bindings() const
   {
     // Don't access this when it isn't current.
     ASSERT(m_current_descriptor_set_layout_binding_list == &m_descriptor_set_layout_bindings);
-    ASSERT(m_descriptor_set_layout_bindings.size() == m_number_of_descriptor_set_layout_bindings);
     return m_descriptor_set_layout_bindings;
   }
 
@@ -97,8 +92,6 @@ class DescriptorSetLayout : public Generated<std::tuple<std::list<DescriptorSetL
 
  private:
   // DescriptorSetLayoutCreateInfo.
-  std::size_t m_number_of_descriptor_set_layout_bindings;               // The number of DescriptorSetLayoutBinding objects that will
-                                                                        // be added, or are already added, to m_descriptor_set_layout_bindings.
   std::list<DescriptorSetLayoutBinding> const* m_current_descriptor_set_layout_binding_list;        // The list that is currently
                                                                         // being built, or m_descriptor_set_layout_bindings once built.
   std::list<DescriptorSetLayoutBinding> m_descriptor_set_layout_bindings;     // Set of objects that describe the binding info.

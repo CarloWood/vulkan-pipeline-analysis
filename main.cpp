@@ -10,24 +10,20 @@ int main()
 
   Pipeline pipeline;
 
-  //Debug(dc::debug.off());
+  Debug(dc::debug.off());
   uint64_t count = 0;
-#if 1
+#if 0
   do
   {
     ++count;
-//    if (count == 305567)
-//      Debug(dc::debug.on());
     Dout(dc::notice, count << " : " << pipeline);
     ASSERT(pipeline.is_sane());
-//    if (count == 305568)
-//      break;
   }
   while (pipeline.next());
 
   Dout(dc::notice, "count = " << count);
 #else
-  utils::RandomNumber rn(0x4);
+  utils::RandomNumber rn(0x123);
 
   for (;;)
   {

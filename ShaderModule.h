@@ -78,12 +78,13 @@ class ShaderModule : public Generated<std::tuple<Declarations&>>
     return m_available_slots;
   }
 
-  DescriptorSetLayout* update_layout_add(Declaration const& declaration);
-  void update_layout_remove(Declaration const& declaration);
+  void update_layout_add(Declaration const& declaration);
+  void update_layout_remove(std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot);
 
   // Accessor.
   Declarations const& declarations() const { return m_declarations; }
   ShaderStageFlagBits stage() const { return m_stage; }
+  Pipeline* pipeline() const { return m_owner; }
 
  private:
   Pipeline* m_owner;                            // Pointer back to the pipeline.

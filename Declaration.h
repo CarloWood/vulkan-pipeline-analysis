@@ -10,6 +10,7 @@
 #include <tuple>
 
 class ShaderModule;
+class PipelineLayout;
 
 using utils::has_print_on::operator<<;
 
@@ -46,6 +47,7 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
 
   ~Declaration();
 
+  void reset();
   bool next();
 
   AShaderResource const& a_shader_resource() const
@@ -82,7 +84,7 @@ class Declaration : public Generated<std::tuple<SetIndexBindingSlot&, AShaderRes
   ShaderModule* const m_owner;                  // The ShaderModule that this Declaration instance is used in (fixed).
   SetIndexBindingSlot m_set_index_binding_slot; // The set index and binding number that this declaration uses.
   AShaderResource m_a_shader_resource;          // The shader resource that is expected to be bound.
-  DescriptorSetLayout* m_descriptor_set_layout; // Pointer the corresponding DescriptorSetLayout in the pipeline layout of this declaration.
+  PipelineLayout* m_pipeline_layout;            // Pointer the PipelineLayout.
 };
 
 #endif // DECLARATION_H

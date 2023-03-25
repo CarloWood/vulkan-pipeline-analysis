@@ -19,14 +19,14 @@ void ShaderModule::mark_unused_slot(Declaration const* current_declaration, SetI
   m_available_slots.mark_unused(slot);
 }
 
-DescriptorSetLayout* ShaderModule::update_layout_add(Declaration const& declaration)
+void ShaderModule::update_layout_add(Declaration const& declaration)
 {
-  return m_owner->update_layout_add(declaration);
+  m_owner->update_layout_add(declaration);
 }
 
-void ShaderModule::update_layout_remove(Declaration const& declaration)
+void ShaderModule::update_layout_remove(std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot)
 {
-  m_owner->update_layout_remove(declaration);
+  m_owner->update_layout_remove(prev_set_index_binding_slot);
 }
 
 #ifdef CWDEBUG

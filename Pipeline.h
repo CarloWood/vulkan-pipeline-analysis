@@ -50,15 +50,17 @@ class Pipeline : public Generated<std::tuple<std::array<Stage, number_of_stages>
     }
   }
 
-  DescriptorSetLayout* update_layout_add(Declaration const& declaration)
+  void update_layout_add(Declaration const& declaration)
   {
-    return m_layout.update_layout_add(declaration);
+    m_layout.update_layout_add(declaration);
   }
 
-  void update_layout_remove(Declaration const& declaration)
+  void update_layout_remove(std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot)
   {
-    m_layout.update_layout_remove(declaration);
+    m_layout.update_layout_remove(prev_set_index_binding_slot);
   }
+
+  PipelineLayout* pipeline_layout_ptr() { return &m_layout; }
 
 #ifdef CWDEBUG
   void print_on(std::ostream& os) const;

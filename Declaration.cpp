@@ -2,6 +2,7 @@
 #include "Declaration.h"
 #include "ShaderModule.h"
 #include "DescriptorSetLayout.h"
+#include "Pipeline.h"
 
 Declaration::Declaration(ShaderModule* owner, int vi) :
   Generated("Declaration", std::forward_as_tuple(m_set_index_binding_slot, m_a_shader_resource)),
@@ -9,22 +10,33 @@ Declaration::Declaration(ShaderModule* owner, int vi) :
   m_owner(owner), m_set_index_binding_slot(this, vi), m_a_shader_resource(this, vi)
 {
   DoutEntering(dc::debug, "Declaration(" << owner << ", " << vi << ") [" << this << "]");
-  m_descriptor_set_layout = m_owner->update_layout_add(*this);
+  m_owner->update_layout_add(*this);
+  m_pipeline_layout = m_owner->pipeline()->pipeline_layout_ptr();
 }
 
 Declaration::~Declaration()
 {
   DoutEntering(dc::debug, "~Declaration() [" << this << "]");
   ASSERT(m_magic == constructed_magic || m_magic == moved_magic);
-  m_owner->update_layout_remove(*this);
   m_magic = destructed_magic;
+}
+
+void Declaration::reset()
+{
+  DoutEntering(dc::debug, "Declaration::reset() [" << this << "]");
+  Generated<std::tuple<SetIndexBindingSlot&, AShaderResource&>>::reset();
+  m_owner->update_layout_add(*this);
 }
 
 bool Declaration::next()
 {
-  BindingIndex prev_binding_index = m_set_index_binding_slot.get_set_index_binding().second;
+  std::pair<SetIndexIndex, BindingIndex> prev_set_index_binding_slot = m_set_index_binding_slot.get_set_index_binding();
+  Declaration const* prev_previous_stage = m_set_index_binding_slot.previous_stage();
   bool result = Generated<std::tuple<SetIndexBindingSlot&, AShaderResource&>>::next();
-  m_descriptor_set_layout->update_layout(prev_binding_index, *this);
+  if (result)
+    m_pipeline_layout->update_layout(prev_set_index_binding_slot, *this);
+  else if (!prev_previous_stage)
+    m_pipeline_layout->update_layout_remove(prev_set_index_binding_slot);
   return result;
 }
 
